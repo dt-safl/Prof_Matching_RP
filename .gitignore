@@ -25,8 +25,9 @@ wheels/
 
 # Data and cache directories
 data/cache/
-data/*.json
-data/*.csv
+# Include essential data files for deployment
+# data/*.json
+# data/*.csv
 
 # IDE and OS files
 .vscode/
