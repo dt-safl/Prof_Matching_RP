@@ -2,7 +2,11 @@
 import sqlite3
 import json
 from contextlib import contextmanager
-from config import settings
+# Simple config for deployment
+import os
+class Settings:
+    DB_PATH = os.path.join(os.path.dirname(__file__), "rfp_matcher.db")
+settings = Settings()
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS profs (
