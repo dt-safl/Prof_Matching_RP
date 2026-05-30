@@ -34,9 +34,25 @@ st.markdown("""
 
 @st.cache_data
 def load():
-    if not os.path.exists(config.OUT_JSON):
+    import os
+    file_path = config.OUT_JSON
+    # Debug info
+    st.write(f"DEBUG: Looking for data at: {file_path}")
+    st.write(f"DEBUG: File exists: {os.path.exists(file_path)}")
+    st.write(f"DEBUG: Working directory: {os.getcwd()}")
+    st.write(f"DEBUG: Files in current dir: {os.listdir('.')[:10]}")
+
+    if not os.path.exists(file_path):
+        st.error(f"Data file not found at: {file_path}")
         return []
-    return json.load(open(config.OUT_JSON))
+
+    try:
+        data = json.load(open(file_path))
+        st.success(f"DEBUG: Successfully loaded {len(data)} profiles")
+        return data
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return []
 
 
 def badge(tier):
