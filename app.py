@@ -24,7 +24,7 @@ st.markdown("""
   .metric{display:inline-block;margin-right:22px;}
   .metric b{font-size:20px;color:#1f4e79;} .metric span{font-size:12px;color:#6b7280;display:block;}
   .card{border:1px solid #e3e6ea;border-radius:10px;padding:14px 16px;margin-bottom:10px;background:#fff;}
-  .verdict{font-size:15px;color:#23303f;font-style:italic;}
+  .verdict{font-size:15px;color:#1a1a1a;font-weight:500;}
   h3{margin-top:1.1rem;}
   .bar{height:7px;border-radius:4px;background:#eceff3;position:relative;margin:3px 0 8px;}
   .bar>i{position:absolute;left:0;top:0;height:7px;border-radius:4px;}
@@ -34,25 +34,9 @@ st.markdown("""
 
 @st.cache_data
 def load():
-    import os
-    file_path = config.OUT_JSON
-    # Debug info
-    st.write(f"DEBUG: Looking for data at: {file_path}")
-    st.write(f"DEBUG: File exists: {os.path.exists(file_path)}")
-    st.write(f"DEBUG: Working directory: {os.getcwd()}")
-    st.write(f"DEBUG: Files in current dir: {os.listdir('.')[:10]}")
-
-    if not os.path.exists(file_path):
-        st.error(f"Data file not found at: {file_path}")
+    if not os.path.exists(config.OUT_JSON):
         return []
-
-    try:
-        data = json.load(open(file_path))
-        st.success(f"DEBUG: Successfully loaded {len(data)} profiles")
-        return data
-    except Exception as e:
-        st.error(f"Error loading data: {e}")
-        return []
+    return json.load(open(config.OUT_JSON))
 
 
 def badge(tier):
