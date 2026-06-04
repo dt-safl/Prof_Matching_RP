@@ -23,7 +23,7 @@ DEFAULT_CSV = os.environ.get(
     "PROF_CSV",
     os.path.join(HERE, "data", "iith_cse_faculty.csv"),  # Use relative path for deployment
 )
-OUT_JSON = os.path.join(HERE, "data", "enriched_profiles.json")
+OUT_JSON = os.path.join(HERE, "data", "enriched_profiles_optimized.json")
 CACHE_DIR = os.path.join(HERE, "data", "cache")
 
 # ---- Enrichment knobs ----
