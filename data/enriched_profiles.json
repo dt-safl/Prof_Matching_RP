@@ -22430,170 +22430,6 @@
     }
   },
   {
-    "name": "Debdeep Mukhopadhyay",
-    "designation": "Professor",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Kharagpur",
-    "email": "debdeep@cse.iitkgp.ac.in",
-    "photo_ok": "",
-    "links": {
-      "iith_profile_url": "https://www.iitkgp.ac.in/department/CS/faculty/cs-debdeep",
-      "google_scholar_url": "nan",
-      "orcid_url": "nan",
-      "dblp_url": "nan",
-      "linkedin_url": "https://www.linkedin.com/school/indian-institute-of-technology-kharagpur",
-      "github_url": "nan",
-      "personal_website": "nan"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "LOW",
-      "h_index_openalex": 43,
-      "works_count": 513,
-      "cited_by_total": 8029,
-      "n_works_pulled": 100,
-      "recent_works": [
-        {
-          "title": "AISELF: An LLM-based Automated Interleaved Speculative-Execution Leakage Detection Framework",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "Journal of Hardware and Systems Security"
-        },
-        {
-          "title": "Efficient and\u00a0Post-quantum Conjunctive Dynamic SSE with\u00a0Strong Privacy Guarantees",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "Lecture notes in computer science"
-        },
-        {
-          "title": "PAC-Guided Design Strategies for\u00a0Resilient Priority Arbiter PUFs",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "Lecture notes in computer science"
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.904,
-        "1.2": 0.566,
-        "1.3": 0.424,
-        "2.1": 1.0,
-        "2.2": 0.229,
-        "3.1": 0.617,
-        "3.2": 0.366
-      },
-      "dense": {
-        "1.1": -0.006,
-        "1.2": -0.052,
-        "1.3": 0.103,
-        "2.1": 0.079,
-        "2.2": -0.101,
-        "3.1": 0.101,
-        "3.2": 0.135
-      },
-      "llm": {
-        "overall_fit": 18,
-        "verdict": "Debdeep Mukhopadhyay is a highly accomplished hardware security researcher specializing in side-channel attacks, cryptographic implementations, and adversarial robustness in hardware contexts, but his work does not meaningfully intersect with the Science of Trustworthy AI program's focus on AI alignment, deception, governance, or multi-agent dynamics.",
-        "confidence": "HIGH",
-        "confidence_reason": "The researcher's publication list is extensive and consistent, clearly establishing a hardware security and cryptography focus. There is no ambiguity about the primary research domain, and the absence of AI safety, alignment, or governance work is unambiguous across all recent papers and abstracts reviewed.",
-        "best_subthemes": [
-          {
-            "id": "2.2",
-            "score": 22,
-            "angle": "Adversarial attack detection and red-teaming of neural networks from a hardware/microarchitectural perspective shares surface-level overlap with adversarial stress testing of AI systems, though the focus is on hardware security rather than AI behavioral evaluation.",
-            "evidence": "DuDAB: A Dual-Staged, Lightweight Detection Methodology for Adversarial Attacks in a Black-Box Setting; MIRAGE: Microarchitectural Footprints for Detecting Adversarial Attacks in One-Shot Inference; Guardian of the Ensembles: Introducing Pairwise Adversarially Robust Loss",
-            "recency": "recent"
-          },
-          {
-            "id": "2.1",
-            "score": 15,
-            "angle": "Some evaluation methodology work exists for hardware security benchmarks and PUF assessment frameworks, with marginal transferability to AI evaluation science.",
-            "evidence": "MADel0: A Modelling and Assessment Framework for Delay PUFs; Addendum: Systematic Evaluation of Randomized Cache Designs against Cache Occupancy",
-            "recency": "recent"
-          },
-          {
-            "id": "1.2",
-            "score": 10,
-            "angle": "Hardware Trojan detection and stealthy attack generation has a very distant conceptual analogy to AI deception, but the mechanisms and threat models are entirely different domains.",
-            "evidence": "NETLAM: An Automated LLM Framework to Generate and Evaluate Stealthy Hardware Trojans",
-            "recency": "recent"
-          },
-          {
-            "id": "3.1",
-            "score": 8,
-            "angle": "Hardware security standards and supply chain integrity governance has negligible overlap with AI governance and policy frameworks.",
-            "evidence": "Hardware Security in the Connected World",
-            "recency": "past"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Hardware security, side-channel attacks, cryptographic implementations, and adversarial robustness in embedded/hardware systems",
-          "maps_to": "NONE",
-          "note": "The researcher's core expertise is in physical and microarchitectural security of hardware systems, cryptography, and PUFs \u2014 none of which map substantively to the Trustworthy AI program's focus on AI alignment, deception, power-seeking, governance, or multi-agent AI dynamics. The use of LLMs as tools (AISELF, NETLAM) is instrumental rather than reflective of AI safety research."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "Hardware security, cryptography, side-channel analysis, physically unclonable functions (PUFs), fault attacks",
-          "reason": "The overwhelming majority of the researcher's portfolio concerns hardware-level security problems \u2014 side-channel attacks on GPUs, fault attacks on cryptosystems, PUF design, supply chain integrity, and post-quantum cryptography \u2014 which are entirely outside the scope of the Science of Trustworthy AI program's focus on AI behavioral safety, alignment, and governance."
-        },
-        "strengths": [
-          "High h-index (43) demonstrates strong research productivity and impact in his domain",
-          "Some recent work on adversarial attack detection in neural networks (DuDAB, MIRAGE, Guardian of the Ensembles) shows awareness of ML security concerns",
-          "Use of LLMs as research tools (AISELF, NETLAM, Netlist Whisperer) indicates familiarity with modern AI methods",
-          "Adversarial robustness work provides a thin conceptual bridge to AI red-teaming (subtheme 2.2)",
-          "Evaluation framework experience (MADel0, cache evaluation) shows methodological rigor transferable in principle"
-        ],
-        "gaps": [
-          "No work on AI alignment, reward specification, or goal misalignment",
-          "No research on AI deception, sandbagging, or situational awareness in AI systems",
-          "No work on power-seeking behavior or instrumental convergence in AI",
-          "No engagement with AI governance, policy frameworks, or standards bodies for AI",
-          "No multi-agent AI systems research",
-          "Adversarial attack work is hardware/microarchitecture-focused, not behavioral AI safety-focused",
-          "No publications in AI safety, AI ethics, or trustworthy AI venues",
-          "LLM usage is purely instrumental (as a tool for hardware analysis), not as a subject of safety research"
-        ],
-        "deal_breakers": [
-          "Core research domain (hardware security, cryptography, PUFs) is fundamentally misaligned with the Science of Trustworthy AI program",
-          "No demonstrated interest or trajectory toward AI alignment, deception, or governance research",
-          "Adversarial ML work is framed entirely through a hardware security lens, not an AI safety lens \u2014 the threat models, methods, and goals are incompatible with the program's subthemes"
-        ],
-        "general_value": "Debdeep Mukhopadhyay is an outstanding researcher in hardware security with a strong publication record and high impact in his field. His work on adversarial attack detection and LLM-assisted hardware analysis shows technical breadth, but his research program is fundamentally oriented toward physical and cryptographic security rather than AI behavioral safety. He would be an excellent fit for hardware security, trusted computing, or cybersecurity programs, but does not bring meaningful expertise or trajectory toward the Science of Trustworthy AI program's core concerns.",
-        "angles": [
-          "Adversarial attack detection and red-teaming of neural networks from a hardware/microarchitectural perspective shares surface-level overlap with adversarial stress testing of AI systems, though the focus is on hardware security rather than AI behavioral evaluation.",
-          "Some evaluation methodology work exists for hardware security benchmarks and PUF assessment frameworks, with marginal transferability to AI evaluation science.",
-          "Hardware Trojan detection and stealthy attack generation has a very distant conceptual analogy to AI deception, but the mechanisms and threat models are entirely different domains."
-        ],
-        "tier_hint": "UNRELATED"
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 43,
-        "citations": 8029,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Senior",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        18,
-        43
-      ],
-      "corpus_chars": 12000
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_kharagpur",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "low_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
     "name": "Niloy Ganguly",
     "designation": "Professor (Head of Department)",
     "department": "Computer Science and Engineering",
@@ -26695,158 +26531,6 @@
     "quality_metrics": {
       "data_completeness": 100,
       "academic_resolution": "high_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
-    "name": "Amey Karkare",
-    "designation": "",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Bombay",
-    "email": "karkare@cse.iitb.ac.in",
-    "photo_ok": "https://www.cse.iitb.ac.in/assets/images/people/faculty/karkare.jpg",
-    "links": {
-      "personal_website": "https://www.cse.iitb.ac.in/~karkare"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "LOW",
-      "h_index_openalex": 11,
-      "works_count": 63,
-      "cited_by_total": 879,
-      "n_works_pulled": 63,
-      "recent_works": [
-        {
-          "title": "EVALUATING LLM\u2011GENERATED FEEDBACK FOR DEBUGGING ASSISTANCE IN CS1",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "INTED proceedings"
-        },
-        {
-          "title": "SCRUBD: Smart Contracts Reentrancy and Unhandled Exceptions Vulnerability Dataset",
-          "year": 2025,
-          "cited_by": 2,
-          "venue": ""
-        },
-        {
-          "title": "Feasibility Study of Augmenting Teaching Assistants with AI for CS1 Programming Feedback",
-          "year": 2025,
-          "cited_by": 7,
-          "venue": ""
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.669,
-        "1.2": 0.392,
-        "1.3": 0.383,
-        "2.1": 1.0,
-        "2.2": 0.113,
-        "3.1": 0.643,
-        "3.2": 0.392
-      },
-      "dense": {
-        "1.1": 0.132,
-        "1.2": 0.046,
-        "1.3": 0.109,
-        "2.1": 0.151,
-        "2.2": 0.122,
-        "3.1": 0.205,
-        "3.2": 0.175
-      },
-      "llm": {
-        "overall_fit": 18,
-        "tier_hint": "UNRELATED",
-        "verdict": "Karkare's research is primarily focused on CS education technology, programming tutors, and smart contract vulnerability detection, with no meaningful overlap with the Science of Trustworthy AI subthemes around alignment, deception, governance, or multi-agent safety.",
-        "angles": {
-          "recent_direct": 5,
-          "transferable_methods": 20,
-          "interest_alignment": 8,
-          "trajectory": 10
-        },
-        "best_subthemes": [
-          {
-            "id": "2.1",
-            "score": 22,
-            "angle": "Work on evaluating LLM-generated feedback and vulnerability detection datasets (SCRUBD) involves benchmark construction and evaluation methodology, which loosely maps to evaluation science",
-            "evidence": "SCRUBD: Smart Contracts Reentrancy and Unhandled Exceptions Vulnerability Dataset; EVALUATING LLM-GENERATED FEEDBACK FOR DEBUGGING ASSISTANCE IN CS1",
-            "recency": "recent"
-          },
-          {
-            "id": "2.2",
-            "score": 15,
-            "angle": "Smart contract vulnerability assessment and network-level attack demonstrations involve adversarial/stress testing concepts, though not applied to AI systems",
-            "evidence": "Network-Level Vulnerability Assessment of Synchrophasor Measurement Devices; Comprehensive Demonstration of Man-in-the-Middle Attack in PDC and PMU Network",
-            "recency": "recent"
-          },
-          {
-            "id": "1.1",
-            "score": 8,
-            "angle": "LLM-based tutoring systems involve some implicit goal specification for AI feedback agents, but this is not studied from an alignment perspective",
-            "evidence": "Feasibility Study of Augmenting Teaching Assistants with AI for CS1 Programming Feedback",
-            "recency": "recent"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "CS Education Technology and LLM-based programming tutors",
-          "maps_to": "NONE",
-          "note": "The dominant research thread is AI-assisted CS1 education (Prutor, P2RUTOR, LEGenT, feedback evaluation), which does not map to any trustworthy AI subtheme in a substantive way"
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "CS Education Technology / Smart Contract Security",
-          "reason": "The researcher's primary contributions are in educational AI tools for programming instruction and blockchain smart contract vulnerability datasets \u2014 neither of which addresses AI safety, alignment, deception, governance, or multi-agent dynamics as defined by the program"
-        },
-        "strengths": [
-          "Experience constructing labeled vulnerability datasets (SCRUBD) demonstrates evaluation methodology skills transferable to benchmark construction",
-          "LLM evaluation work (evaluating LLM-generated feedback) shows familiarity with assessing LLM outputs in applied settings",
-          "Adversarial/attack demonstration work shows some exposure to security-oriented thinking",
-          "Large-scale randomized intervention study design shows empirical rigor"
-        ],
-        "gaps": [
-          "No work on AI alignment, reward specification, or goal misalignment",
-          "No research on AI deception, situational awareness, or sandbagging",
-          "No work on power-seeking behavior or instrumental convergence",
-          "No engagement with AI governance, policy frameworks, or standards",
-          "No multi-agent AI dynamics or emergent collective behavior research",
-          "Smart contract security work is not connected to AI system security",
-          "LLM usage is purely applied/pedagogical, not studied from a safety lens",
-          "H-index of 11 suggests limited research impact in any domain relevant to the program"
-        ],
-        "deal_breakers": [
-          "Core research identity is CS education technology \u2014 fundamentally misaligned with trustworthy AI program scope",
-          "No demonstrated awareness of or engagement with AI safety literature",
-          "Vulnerability work targets blockchain/power systems, not AI systems",
-          "No trajectory toward trustworthy AI topics visible in recent publications"
-        ],
-        "general_value": "Karkare brings solid applied ML/LLM evaluation skills in educational contexts and some security assessment methodology, but these do not translate meaningfully to the Science of Trustworthy AI program. Redirection toward AI safety or alignment research would require a substantial pivot with no current evidence of such intent.",
-        "confidence": "HIGH",
-        "confidence_reason": "The publication record is clear and consistent \u2014 all recent papers fall squarely in CS education technology or smart contract security, with no papers touching trustworthy AI subthemes. The assessment is based on a well-documented and coherent research profile."
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 11,
-        "citations": 879,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Mid-career",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        18,
-        879
-      ],
-      "corpus_chars": 11102
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_bombay",
-    "quality_metrics": {
-      "data_completeness": 87,
-      "academic_resolution": "low_confidence",
       "enrichment_level": "standard"
     }
   },
@@ -32116,156 +31800,6 @@
     }
   },
   {
-    "name": "Abhijit Das",
-    "designation": "Assistant Professor",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Hyderabad",
-    "email": "abhijit.das@cse.iith.ac.in",
-    "photo_ok": "https://iith.irins.org/profile_images/656259.jpeg",
-    "links": {
-      "iith_profile_url": "https://people.iith.ac.in/abhijit.das/",
-      "google_scholar_url": "https://scholar.google.com/citations?user=UDIIkgYAAAAJ&hl=en",
-      "orcid_url": "https://orcid.org/0000-0002-8912-9657",
-      "dblp_url": "https://dblp.uni-trier.de/pers/hd/d/Das_0002:Abhijit",
-      "scopus_url": "http://www.scopus.com/authid/detail.url?authorId=57214490565",
-      "linkedin_url": "https://www.linkedin.com/in/abhijitcse",
-      "personal_website": "https://people.iith.ac.in/abhijit.das/"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "orcid",
-      "academic_confidence": "HIGH",
-      "h_index_openalex": 10,
-      "works_count": 68,
-      "cited_by_total": 493,
-      "n_works_pulled": 68,
-      "recent_works": [
-        {
-          "title": "Juggler: A Dynamic Warp Scheduler for GPGPUs",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "IEEE Transactions on Computer-Aided Design of Inte"
-        },
-        {
-          "title": "Instruction-Directed MAC for Efficient Classical Communication in Scalable Multi-Chip Quantum System...",
-          "year": 2025,
-          "cited_by": 0,
-          "venue": ""
-        },
-        {
-          "title": "Assessing the Role of Communication in Modular Multi-Core Quantum Systems",
-          "year": 2025,
-          "cited_by": 1,
-          "venue": "ACM Transactions on Design Automation of Electroni"
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.868,
-        "1.2": 0.393,
-        "1.3": 0.541,
-        "2.1": 1.0,
-        "2.2": 0.309,
-        "3.1": 0.931,
-        "3.2": 0.434
-      },
-      "dense": {
-        "1.1": 0.025,
-        "1.2": 0.091,
-        "1.3": 0.087,
-        "2.1": 0.132,
-        "2.2": 0.089,
-        "3.1": 0.258,
-        "3.2": 0.1
-      },
-      "llm": {
-        "overall_fit": 15,
-        "tier_hint": "UNRELATED",
-        "verdict": "Professor Abhijit Das's work is unrelated to the Science of Trustworthy AI agenda, with a primary focus on computer architecture, systems for AI/ML, and quantum computing, but lacks direct relevance to trustworthy AI themes.",
-        "angles": {
-          "recent_direct": 0,
-          "transferable_methods": 20,
-          "interest_alignment": 10,
-          "trajectory": 30
-        },
-        "best_subthemes": [
-          {
-            "id": "1.1",
-            "score": 10,
-            "angle": "quantum computing and AI/ML systems might intersect with misalignment themes, but no direct evidence",
-            "evidence": "NO DIRECT EVIDENCE",
-            "recency": "none"
-          },
-          {
-            "id": "3.1",
-            "score": 5,
-            "angle": "scalable oversight might relate to quantum computing, but no clear connection",
-            "evidence": "NO DIRECT EVIDENCE",
-            "recency": "none"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "computer architecture and AI/ML systems",
-          "maps_to": "NONE",
-          "note": "primary research area does not align with trustworthy AI themes"
-        },
-        "out_of_scope": {
-          "flag": false,
-          "area": "",
-          "reason": "work is unrelated, not exclusively focused on an out-of-scope area"
-        },
-        "strengths": [
-          "expertise in computer architecture and AI/ML systems",
-          "experience in quantum computing"
-        ],
-        "gaps": [
-          "lack of direct research experience in trustworthy AI",
-          "no clear connection to Science of Trustworthy AI themes"
-        ],
-        "deal_breakers": [
-          "no recent or direct work on trustworthy AI themes"
-        ],
-        "general_value": "Professor Abhijit Das is a strong researcher in computer architecture and AI/ML systems, with a notable publication record and a clear expertise in quantum computing, but his work is not directly relevant to the Science of Trustworthy AI agenda.",
-        "confidence": "MEDIUM",
-        "confidence_reason": "based on publicly available data, but may not reflect the full scope of the professor's research interests and expertise"
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 10,
-        "citations": 493,
-        "h_index_5y": 9,
-        "activity_ratio": 0.9,
-        "seniority": "Mid-career",
-        "agency_areas": [
-          "startup_founder",
-          "advisory_board",
-          "vc_funding",
-          "patents",
-          "grants_awards",
-          "industry_collab",
-          "talks_keynotes",
-          "leadership_roles",
-          "social_presence"
-        ],
-        "industry_active": true
-      },
-      "rank_key": [
-        2,
-        15,
-        493
-      ],
-      "corpus_chars": 12000
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_hyderabad",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "high_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
     "name": "Praveen Tammana",
     "designation": "Assistant Professor",
     "department": "Computer Science and Engineering",
@@ -35380,162 +34914,6 @@
     }
   },
   {
-    "name": "Debasis Das",
-    "designation": "Assistant Professor, Gr-I",
-    "department": "Electrical & Electronics Engineering",
-    "institute": "BITS Pilani",
-    "email": "debasisdas@goa.bits-pilani.ac.in",
-    "photo_ok": "",
-    "links": {
-      "bits_profile_url": "https://www.bits-pilani.ac.in/goa/debasis-das",
-      "linkedin_url": "https://www.linkedin.com/in/debasis-das-1a108ab8/",
-      "personal_website": "https://gad.bits-goa.ac.in/Sophisticated-Instruments/"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "LOW",
-      "h_index_openalex": 25,
-      "works_count": 228,
-      "cited_by_total": 1987,
-      "n_works_pulled": 100,
-      "recent_works": [
-        {
-          "title": "Rafale: Towards the Efficient Resource-Aware Federated Knowledge Distillation on Heterogeneous Clien...",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "Research Square"
-        },
-        {
-          "title": "FedBio-AD: Federated Learning Enabled Digital Biomarker Framework for Early Alzheimer\u2019s disease Dete...",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "Expert Systems with Applications"
-        },
-        {
-          "title": "EPUV: A lightweight protocol for enhancing security and performance in UAV-assisted IoV systems",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "Pervasive and Mobile Computing"
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.821,
-        "1.2": 0.604,
-        "1.3": 0.628,
-        "2.1": 1.0,
-        "2.2": 0.176,
-        "3.1": 0.624,
-        "3.2": 0.461
-      },
-      "dense": {
-        "1.1": -0.058,
-        "1.2": 0.129,
-        "1.3": 0.147,
-        "2.1": 0.109,
-        "2.2": 0.072,
-        "3.1": 0.146,
-        "3.2": 0.239
-      },
-      "llm": {
-        "overall_fit": 12,
-        "tier_hint": "UNRELATED",
-        "verdict": "Debasis Das's research is firmly rooted in hardware-level computing, IoT security, federated learning for smart city applications, and nanoelectronics \u2014 domains with negligible overlap with the Science of Trustworthy AI program's focus on AI alignment, deception, governance, and evaluation science.",
-        "angles": {
-          "recent_direct": 5,
-          "transferable_methods": 18,
-          "interest_alignment": 8,
-          "trajectory": 10
-        },
-        "best_subthemes": [
-          {
-            "id": "3.2",
-            "score": 15,
-            "angle": "Multi-agent reinforcement learning for spectrum management and routing touches on collective agent behavior and emergent dynamics in networked systems, though not in an AI safety context",
-            "evidence": "Meta-enhanced hierarchical multi-agent reinforcement learning for dynamic spectrum management and trust-based routing in cognitive vehicular networks",
-            "recency": "recent"
-          },
-          {
-            "id": "2.1",
-            "score": 12,
-            "angle": "PUFAnalytics library represents evaluation methodology work for hardware security primitives, loosely analogous to benchmark/assessment methodology development",
-            "evidence": "PUFAnalytics: Python Library for Comprehensive Evaluation and Analysis of PUFs",
-            "recency": "recent"
-          },
-          {
-            "id": "3.1",
-            "score": 10,
-            "angle": "Blockchain consensus and privacy-preserving frameworks touch on decentralized governance and coordination protocols, though not AI governance specifically",
-            "evidence": "RPoE: A Reputation-Aware Proof-of-Energy Blockchain Protocol; Resolving Blockchain's Immutable Dilemma",
-            "recency": "recent"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Federated Learning, IoT Security, and Privacy-Preserving Systems",
-          "maps_to": "NONE",
-          "note": "While federated learning has tangential relevance to distributed AI systems, Das's application focus is on IoT infrastructure, vehicular networks, and smart city security \u2014 not AI trustworthiness, alignment, or safety evaluation as defined by the program's subthemes."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "Nanoelectronics, Spintronics, Neuromorphic Computing, IoT/IoV Security, Energy-Efficient Hardware",
-          "reason": "The core stated research interests (nanoelectronics, spintronics, neuromorphic computing, energy-efficient computing) and the bulk of recent publications are hardware/systems-level work with no meaningful connection to AI alignment, deception detection, power-seeking behavior, red teaming, or AI governance frameworks."
-        },
-        "strengths": [
-          "Multi-agent RL work (vehicular networks) provides some surface-level familiarity with agent coordination concepts relevant to subtheme 3.2",
-          "Federated learning expertise could theoretically inform distributed AI evaluation challenges",
-          "Privacy-preserving framework work demonstrates awareness of trust and security considerations in deployed systems",
-          "High h-index (25) indicates strong research productivity and publication record",
-          "Experience with adversarial/security threat modeling in IoT contexts has distant methodological parallels to red teaming"
-        ],
-        "gaps": [
-          "No work on AI alignment, reward specification, or goal misalignment",
-          "No research on AI deception, sandbagging, or situational awareness in AI systems",
-          "No work on power-seeking behavior or instrumental convergence in AI",
-          "No AI safety benchmarks or evaluation science for language/foundation models",
-          "No red teaming of AI systems (only hardware/protocol security testing)",
-          "No AI governance, policy frameworks, or standards work",
-          "No publications in AI safety, ML fairness, or trustworthy AI venues",
-          "Stated research interests contain zero overlap with program subthemes",
-          "No trajectory toward AI safety or alignment research visible in publication history"
-        ],
-        "deal_breakers": [
-          "Primary research identity is in hardware computing (nanoelectronics, spintronics, neuromorphic hardware) \u2014 fundamentally different domain from trustworthy AI",
-          "No demonstrated engagement with AI safety literature, concepts, or research community",
-          "Recent papers are overwhelmingly focused on IoT/IoV systems, vehicular networks, and blockchain \u2014 not AI model behavior or safety",
-          "The program's core subthemes (alignment, deception, power-seeking, red teaming of AI) have no meaningful analog in the researcher's body of work"
-        ],
-        "general_value": "Debasis Das is a productive researcher in IoT security, federated learning applications, and hardware computing with a solid publication record. However, his expertise does not align with the Science of Trustworthy AI program's focus areas. He could potentially contribute to peripheral infrastructure questions (e.g., secure federated learning deployment) but lacks the foundational engagement with AI safety, alignment, or evaluation science that the program requires.",
-        "confidence": "HIGH",
-        "confidence_reason": "The researcher's stated interests, institutional profile, and extensive recent publication list all consistently point to hardware/IoT/systems security domains. There is no ambiguity \u2014 no papers in AI safety venues, no alignment-related abstracts, and no trajectory toward the program's core themes. The assessment is based on comprehensive and consistent evidence."
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 25,
-        "citations": 1987,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Established",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        12,
-        1987
-      ],
-      "corpus_chars": 12000
-    },
-    "identity_sanity": null,
-    "source_institution": "bits",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "low_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
     "name": "Sriparna Saha",
     "designation": "Associate Professor",
     "department": "Computer Science and Engineering",
@@ -37378,178 +36756,6 @@
     "quality_metrics": {
       "data_completeness": 100,
       "academic_resolution": "high_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
-    "name": "Vinayak Naik",
-    "designation": "",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Bombay",
-    "email": "naik@cse.iitb.ac.in",
-    "photo_ok": "https://www.cse.iitb.ac.in/assets/images/people/faculty/naik.jpg",
-    "links": {
-      "personal_website": "https://www.cse.iitb.ac.in/~naik"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "LOW",
-      "h_index_openalex": 16,
-      "works_count": 140,
-      "cited_by_total": 2194,
-      "n_works_pulled": 100,
-      "recent_works": [
-        {
-          "title": "Transmit Beamforming Design for Secure RIS assisted ISAC UAV Network",
-          "year": 2025,
-          "cited_by": 0,
-          "venue": ""
-        },
-        {
-          "title": "On the Constancy of Latency at the Internet's Edge",
-          "year": 2025,
-          "cited_by": 1,
-          "venue": ""
-        },
-        {
-          "title": "Effect of barium doping on dielectric and conducting properties of KHP crystals",
-          "year": 2025,
-          "cited_by": 0,
-          "venue": "Journal of Materials Science Materials in Electron"
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.944,
-        "1.2": 0.726,
-        "1.3": 0.576,
-        "2.1": 1.0,
-        "2.2": 0.324,
-        "3.1": 0.927,
-        "3.2": 0.465
-      },
-      "dense": {
-        "1.1": -0.07,
-        "1.2": 0.202,
-        "1.3": 0.22,
-        "2.1": 0.062,
-        "2.2": 0.121,
-        "3.1": 0.172,
-        "3.2": 0.313
-      },
-      "llm": {
-        "overall_fit": 12,
-        "tier_hint": "UNRELATED",
-        "verdict": "Vinayak Naik's research is primarily focused on IoT systems, edge computing, wireless networks, federated learning infrastructure, and agent-based epidemiological modeling \u2014 none of which substantively address the Science of Trustworthy AI program's core concerns around AI alignment, deception, power-seeking, evaluation science, red teaming, or AI governance.",
-        "angles": {
-          "recent_direct": 4,
-          "transferable_methods": 18,
-          "interest_alignment": 8,
-          "trajectory": 8
-        },
-        "best_subthemes": [
-          {
-            "id": "3.2",
-            "score": 14,
-            "angle": "Agent-based modeling of COVID-19 spread on campuses involves multi-agent simulation and emergent collective behavior, which is structurally analogous to multi-agent dynamics, though applied to epidemiology rather than AI systems.",
-            "evidence": "Use of Agent-based Modeling to Gauge Impact of Lockdown Strategies on Spread of COVID-19 on an Educational Campus; Estimating the Spread of COVID-19 Due to Transportation Networks Using Agent-Based Modeling",
-            "recency": "recent"
-          },
-          {
-            "id": "2.1",
-            "score": 10,
-            "angle": "Federated learning survey touches on evaluation challenges including fairness, bias from unbalanced data distributions, and performance measurement \u2014 tangentially related to evaluation science for AI systems.",
-            "evidence": "Federated Learning: A Comprehensive Survey on Types, Applications, Challenges, and Future Directions",
-            "recency": "recent"
-          },
-          {
-            "id": "2.2",
-            "score": 9,
-            "angle": "Explainable intrusion detection using SHAP and LIME involves adversarial threat detection, which is a distant cousin of red teaming methodologies, though focused on cybersecurity rather than AI model stress testing.",
-            "evidence": "Transparent Threat Detection Using SHAP and LIME to build an Explainable Intrusion Detection System",
-            "recency": "recent"
-          },
-          {
-            "id": "1.1",
-            "score": 6,
-            "angle": "Reinforcement learning for energy optimization (OCSRL) involves reward specification in a narrow applied domain, but there is no engagement with alignment problems, misalignment risks, or goal specification challenges in AI.",
-            "evidence": "OCSRL: An Model-Based Reinforcement Learning Approach to Optimize Energy Consumption of Cooling Systems",
-            "recency": "recent"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "IoT systems, edge computing, wireless networks, and applied machine learning for physical systems",
-          "maps_to": "NONE",
-          "note": "The researcher's dominant focus on hardware-adjacent ML, network latency, sensor-based activity detection, and cooling system optimization does not map to any subtheme within the Science of Trustworthy AI program. The work is applied systems engineering rather than AI safety or trustworthiness research."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "IoT/Edge Computing, Wireless Communications, Epidemiological Simulation, Applied Sensor ML",
-          "reason": "The overwhelming majority of recent papers concern wireless beamforming (RIS/UAV/ISAC), IoT energy management, smartwatch activity detection, network latency measurement, and COVID-19 agent-based modeling. These are entirely outside the scope of trustworthy AI research as defined by the program's subthemes."
-        },
-        "strengths": [
-          "Familiarity with federated learning, including privacy, fairness, and data heterogeneity challenges \u2014 concepts adjacent to trustworthy ML",
-          "Experience with agent-based modeling provides methodological grounding relevant to multi-agent system simulation",
-          "Use of explainability tools (SHAP, LIME) in intrusion detection shows some awareness of interpretable AI",
-          "Applied RL experience (OCSRL) demonstrates hands-on ML modeling capability",
-          "Broad systems-level perspective across distributed computing, networking, and ML could support infrastructure-level trustworthy AI work"
-        ],
-        "gaps": [
-          "No research on AI alignment, reward misspecification, or goal misgeneralization",
-          "No work on AI deception, sandbagging, or situational awareness in AI systems",
-          "No engagement with power-seeking behavior or instrumental convergence in AI",
-          "No AI safety benchmarks, capability evaluations, or assessment methodology development",
-          "No red teaming of AI models or adversarial robustness research targeting AI systems specifically",
-          "No AI governance, policy frameworks, or standards work",
-          "No multi-agent AI dynamics research (agent-based COVID modeling is epidemiological, not AI-focused)",
-          "No publications in AI safety, AI ethics, or trustworthy AI venues",
-          "Research trajectory shows no movement toward trustworthy AI topics"
-        ],
-        "deal_breakers": [
-          "Primary research domain (wireless communications, IoT, edge computing) is entirely orthogonal to trustworthy AI",
-          "No demonstrated awareness of or engagement with AI safety literature or community",
-          "Recent paper portfolio shows no pivot toward alignment, evaluation, governance, or related subthemes",
-          "Agent-based modeling work is epidemiological simulation, not AI multi-agent systems research"
-        ],
-        "general_value": "Vinayak Naik is a productive systems researcher with solid expertise in IoT, edge ML, and distributed computing. His h-index of 16 reflects genuine research productivity. However, his work has essentially no overlap with the Science of Trustworthy AI program's focus areas. While federated learning and explainability tools appear peripherally in his portfolio, they are used as engineering tools rather than studied from a safety or trustworthiness perspective. He would be a strong candidate for programs focused on edge AI, IoT security, or distributed systems, but is not a fit for this program without a substantial and demonstrated research pivot.",
-        "confidence": "HIGH",
-        "confidence_reason": "The researcher's paper titles and abstracts are highly specific and consistent, providing a clear picture of a systems/networking/IoT research profile. There is no ambiguity about the primary research direction, and the absence of trustworthy AI content across all recent papers makes the assessment straightforward."
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 16,
-        "citations": 2194,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Mid-career",
-        "agency_areas": [
-          "startup_founder",
-          "advisory_board",
-          "vc_funding",
-          "patents",
-          "grants_awards",
-          "industry_collab",
-          "talks_keynotes",
-          "leadership_roles",
-          "standards_gov",
-          "social_presence"
-        ],
-        "industry_active": true
-      },
-      "rank_key": [
-        2,
-        12,
-        2194
-      ],
-      "corpus_chars": 12000
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_bombay",
-    "quality_metrics": {
-      "data_completeness": 87,
-      "academic_resolution": "low_confidence",
       "enrichment_level": "standard"
     }
   },
@@ -54240,153 +53446,6 @@
     }
   },
   {
-    "name": "Sivaramakrishnan K C",
-    "designation": "Assistant Professor",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Madras",
-    "email": "",
-    "photo_ok": "",
-    "links": {},
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "LOW",
-      "h_index_openalex": 15,
-      "works_count": 43,
-      "cited_by_total": 534,
-      "n_works_pulled": 43,
-      "recent_works": [
-        {
-          "title": "A Mechanically Verified Garbage Collector for OCaml",
-          "year": 2025,
-          "cited_by": 2,
-          "venue": "Journal of Automated Reasoning"
-        },
-        {
-          "title": "Automatically Verifying Replication-Aware Linearizability",
-          "year": 2025,
-          "cited_by": 0,
-          "venue": "Proceedings of the ACM on Programming Languages"
-        },
-        {
-          "title": "Automatically Verifying Replication-aware Linearizability",
-          "year": 2025,
-          "cited_by": 0,
-          "venue": "ArXiv.org"
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.928,
-        "1.2": 0.588,
-        "1.3": 0.482,
-        "2.1": 1.0,
-        "2.2": 0.051,
-        "3.1": 0.752,
-        "3.2": 0.337
-      },
-      "dense": {
-        "1.1": 0.032,
-        "1.2": 0.032,
-        "1.3": 0.067,
-        "2.1": 0.11,
-        "2.2": 0.123,
-        "3.1": 0.164,
-        "3.2": 0.046
-      },
-      "llm": {
-        "overall_fit": 8,
-        "verdict": "Sivaramakrishnan K C's research is firmly rooted in programming language theory, formal verification, and distributed systems correctness \u2014 areas with no meaningful overlap with the Science of Trustworthy AI program's focus on AI safety, alignment, evaluation, or governance.",
-        "confidence": "HIGH",
-        "confidence_reason": "The researcher's full paper list and abstracts are consistently and exclusively in PL/formal methods domains. There is no ambiguity \u2014 no AI papers, no safety papers, and no stated research interests that could suggest otherwise.",
-        "best_subthemes": [
-          {
-            "id": "2.1",
-            "score": 10,
-            "angle": "Formal verification and automated correctness checking methods share methodological DNA with rigorous AI evaluation science, though the application domain is entirely different (PL runtimes vs. AI systems).",
-            "evidence": "Automatically Verifying Replication-Aware Linearizability; Mechanically Verified Garbage Collector for OCaml",
-            "recency": "recent"
-          },
-          {
-            "id": "3.2",
-            "score": 8,
-            "angle": "Work on replicated data types and eventual consistency touches on distributed/multi-agent state convergence at a theoretical level, but is not concerned with AI agents or emergent AI behavior.",
-            "evidence": "Certified Mergeable Replicated Data Types; Automatically Verifying Replication-Aware Linearizability",
-            "recency": "recent"
-          },
-          {
-            "id": "2.2",
-            "score": 7,
-            "angle": "ConFuzz introduces coverage-guided property fuzzing, which is conceptually adjacent to adversarial/stress testing methodologies, but targets event-driven programs rather than AI systems.",
-            "evidence": "ConFuzz: Coverage-Guided Property Fuzzing for Event-Driven Programs",
-            "recency": "recent"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Formal verification of programming language runtimes and distributed/replicated data structures",
-          "maps_to": "NONE",
-          "note": "The researcher's core expertise is in mechanized proofs, type systems, effect handlers, and consistency models for distributed systems \u2014 none of which map to AI trustworthiness subthemes in any direct or near-direct way."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "Programming Language Theory & Formal Verification",
-          "reason": "All recent papers concern OCaml runtime verification, WebAssembly effect handlers, replicated data type correctness, and program fuzzing. There is no evidence of AI/ML research, safety research, or any engagement with the themes of the Science of Trustworthy AI program."
-        },
-        "strengths": [
-          "Strong formal methods background could theoretically be applied to AI system verification in the future.",
-          "Fuzzing methodology (ConFuzz) is conceptually related to adversarial testing approaches used in AI red-teaming.",
-          "Distributed systems consistency work provides theoretical grounding relevant to multi-agent coordination problems.",
-          "High rigor and mechanized proof experience is a valued skill in safety-critical system analysis."
-        ],
-        "gaps": [
-          "No publications on AI, machine learning, or neural network systems.",
-          "No engagement with AI alignment, reward specification, or goal misgeneralization.",
-          "No work on AI evaluation benchmarks or assessment methodologies.",
-          "No research on AI governance, policy, or standards.",
-          "No evidence of interest in deception, power-seeking, or emergent AI behavior.",
-          "Research interests field is empty, providing no signal of future direction toward AI safety."
-        ],
-        "deal_breakers": [
-          "Entire research portfolio is in programming languages and formal verification with zero AI/ML content.",
-          "No trajectory signal suggesting movement toward AI safety or trustworthy AI research.",
-          "The gap between current expertise and program requirements would require a near-complete research pivot."
-        ],
-        "general_value": "Sivaramakrishnan K C is a strong researcher in programming language theory and formal verification (H-index 15, IIT Madras), but their work is entirely outside the scope of the Science of Trustworthy AI program. While formal verification skills are abstractly valuable, there is no evidence of application to AI systems, and no plausible near-term bridge to the program's core subthemes.",
-        "angles": {
-          "recent_direct": 2,
-          "transferable_methods": 12,
-          "interest_alignment": 3,
-          "trajectory": 5
-        },
-        "tier_hint": "UNRELATED"
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 15,
-        "citations": 534,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Mid-career",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        8,
-        15
-      ],
-      "corpus_chars": 8847
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_madras",
-    "quality_metrics": {
-      "data_completeness": 87,
-      "academic_resolution": "low_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
     "name": "Subhajit Roy",
     "designation": "Professor",
     "department": "Computer Science and Engineering",
@@ -62470,162 +61529,6 @@
     },
     "identity_sanity": null,
     "source_institution": "iit_indore",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "high_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
-    "name": "Sidharth Sharma",
-    "designation": "Assistant Professor",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Jodhpur",
-    "email": "sidharth@iitj.ac.in",
-    "photo_ok": "https://home.iitj.ac.in/~sidharth/profile.jpg",
-    "links": {
-      "google_scholar_url": "http://scholar.google.co.in/citations?user=c0R1WokAAAAJ",
-      "orcid_url": "https://orcid.org/0000-0003-0344-4937",
-      "scopus_url": "http://www.scopus.com/authid/detail.url?authorId=56369446100"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "orcid",
-      "academic_confidence": "HIGH",
-      "h_index_openalex": 7,
-      "works_count": 36,
-      "cited_by_total": 206,
-      "n_works_pulled": 35,
-      "recent_works": [
-        {
-          "title": "Reservoir characterization using simultaneous inversion of pre-stack seismic data based on tradition...",
-          "year": 2025,
-          "cited_by": 1,
-          "venue": "Earth Science Informatics"
-        },
-        {
-          "title": "Smart Physiotherapy: Monitoring Distal Carpal Kinematics Using TinyML",
-          "year": 2024,
-          "cited_by": 3,
-          "venue": ""
-        },
-        {
-          "title": "P4+NFV: Optimal offloading from P4 switches to NFV for diverse traffic streams",
-          "year": 2024,
-          "cited_by": 0,
-          "venue": "Computer Networks"
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.608,
-        "1.2": 0.363,
-        "1.3": 0.388,
-        "2.1": 1.0,
-        "2.2": 0.088,
-        "3.1": 0.589,
-        "3.2": 0.286
-      },
-      "dense": {
-        "1.1": -0.033,
-        "1.2": 0.056,
-        "1.3": 0.14,
-        "2.1": 0.138,
-        "2.2": 0.062,
-        "3.1": 0.186,
-        "3.2": 0.122
-      },
-      "llm": {
-        "overall_fit": 8,
-        "tier_hint": "UNRELATED",
-        "verdict": "Sidharth Sharma's research is firmly rooted in network systems, NFV, SDN, and performance modeling \u2014 domains with virtually no overlap with the Science of Trustworthy AI subthemes focused on alignment, deception, evaluation, governance, or multi-agent AI safety.",
-        "angles": {
-          "recent_direct": 3,
-          "transferable_methods": 10,
-          "interest_alignment": 5,
-          "trajectory": 5
-        },
-        "best_subthemes": [
-          {
-            "id": "3.2",
-            "score": 10,
-            "angle": "Multi-agent network systems and emergent collective behavior in distributed network architectures have superficial structural parallels to multi-agent AI dynamics, but the focus is on packet routing and NFV orchestration, not AI agent behavior.",
-            "evidence": "SliAvailRAN: Availability-Aware Slicing and Adaptive Function Placement in Virtualized RANs; A Network Calculus Model for SFC Realization",
-            "recency": "recent"
-          },
-          {
-            "id": "2.1",
-            "score": 8,
-            "angle": "Performance modeling and network verification (VERCEL) involve formal evaluation methodologies, but these are applied to network configurations, not AI system assessment or benchmarking.",
-            "evidence": "VERCEL: Verification and Rectification of Configuration Errors With Least Squares",
-            "recency": "recent"
-          },
-          {
-            "id": "1.1",
-            "score": 5,
-            "angle": "Deep reinforcement learning for routing touches on AI optimization, but the goal alignment framing is entirely absent \u2014 the work is about network performance, not AI safety or misalignment.",
-            "evidence": "Using Deep Reinforcement Learning for Routing in IP Networks",
-            "recency": "past"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Network Softwarization and NFV/SDN Performance Modeling",
-          "maps_to": "NONE",
-          "note": "The researcher's primary focus on programmable networks, service function chaining, and network calculus does not map meaningfully to any of the seven Trustworthy AI subthemes. The infrastructure-level work is several abstraction layers removed from AI safety concerns."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "Network Systems Engineering and Telecommunications",
-          "reason": "The body of work is almost entirely in telecommunications infrastructure, network management, and SDN/NFV \u2014 a domain orthogonal to AI trustworthiness, safety, alignment, or governance. Even the AI-adjacent papers (TinyML, DRL routing) are applied engineering works with no safety or trustworthiness framing."
-        },
-        "strengths": [
-          "Some exposure to machine learning methods (Random Forest, Decision Tree, Deep RL) in applied contexts",
-          "Formal verification work (VERCEL) demonstrates mathematical rigor that could theoretically transfer to AI system verification",
-          "Network calculus and stochastic modeling skills represent strong quantitative foundations",
-          "Experience with optimization methods (PSO, conjugate gradient) shows breadth in computational techniques",
-          "TinyML work shows awareness of edge AI deployment constraints"
-        ],
-        "gaps": [
-          "No research on AI alignment, reward specification, or goal misalignment",
-          "No work on AI deception, situational awareness, or sandbagging behaviors",
-          "No engagement with AI safety literature or frameworks",
-          "No red teaming, adversarial ML, or stress testing of AI systems",
-          "No governance, policy, or standards work related to AI",
-          "No multi-agent AI systems research (only network-level multi-node systems)",
-          "No benchmarking or evaluation science for AI models",
-          "No publications in AI safety, ML fairness, or trustworthy AI venues"
-        ],
-        "deal_breakers": [
-          "Research program is fundamentally in network engineering, not AI safety or trustworthiness",
-          "No demonstrated interest or trajectory toward Trustworthy AI research themes",
-          "The few AI-related papers are purely applied engineering with no safety or alignment framing",
-          "H-index of 7 with no publications in relevant AI safety or ML trustworthiness venues",
-          "Research interests explicitly listed as network systems topics with no AI safety component"
-        ],
-        "general_value": "Sidharth Sharma is a competent network systems researcher with solid quantitative skills, but his expertise lies entirely outside the Science of Trustworthy AI program's scope. His work on NFV, SDN, and network performance modeling, while technically rigorous, does not address AI safety, alignment, evaluation, or governance. Redirection into this program would require a fundamental pivot in research focus rather than a natural extension of existing work.",
-        "confidence": "HIGH",
-        "confidence_reason": "The researcher's publication record, stated interests, and institutional focus are consistently and clearly in network systems engineering. There is no ambiguity \u2014 no papers, abstracts, or stated interests touch on Trustworthy AI subthemes in any substantive way, making the UNRELATED classification highly confident."
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 7,
-        "citations": 206,
-        "h_index_5y": 6,
-        "activity_ratio": 0.86,
-        "seniority": "Early-career",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        8,
-        206
-      ],
-      "corpus_chars": 10253
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_jodhpur",
     "quality_metrics": {
       "data_completeness": 100,
       "academic_resolution": "high_confidence",
@@ -71460,149 +70363,6 @@
     "quality_metrics": {
       "data_completeness": 100,
       "academic_resolution": "high_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
-    "name": "Kolin Paul",
-    "designation": "Associate Professor",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Bombay",
-    "email": "kolin@cse.iitb.ac.in",
-    "photo_ok": "https://www.cse.iitb.ac.in/assets/images/people/faculty/kolin.jpg",
-    "links": {
-      "personal_website": "https://www.cse.iitb.ac.in/~kolin"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "LOW",
-      "h_index_openalex": 3,
-      "works_count": 4,
-      "cited_by_total": 19,
-      "n_works_pulled": 4,
-      "recent_works": [
-        {
-          "title": "Optimizing DL Models for Deployment on Resource-Constrained Platforms",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": ""
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.0,
-        "1.2": 0.552,
-        "1.3": 0.96,
-        "2.1": 0.357,
-        "2.2": 0.0,
-        "3.1": 1.0,
-        "3.2": 0.277
-      },
-      "dense": {
-        "1.1": 0.006,
-        "1.2": 0.073,
-        "1.3": 0.088,
-        "2.1": -0.021,
-        "2.2": -0.023,
-        "3.1": 0.059,
-        "3.2": -0.022
-      },
-      "llm": {
-        "overall_fit": 6,
-        "tier_hint": "UNRELATED",
-        "verdict": "Kolin Paul's research focuses on optimizing deep learning models for resource-constrained hardware deployment, which is a systems/efficiency domain with no meaningful overlap with trustworthy AI subthemes such as alignment, deception, governance, or red teaming.",
-        "angles": {
-          "recent_direct": 2,
-          "transferable_methods": 8,
-          "interest_alignment": 3,
-          "trajectory": 5
-        },
-        "best_subthemes": [
-          {
-            "id": "2.1",
-            "score": 8,
-            "angle": "Model optimization and compression work tangentially touches evaluation science insofar as benchmarking model performance on constrained platforms requires assessment methodologies, but this is not safety-oriented evaluation.",
-            "evidence": "Optimizing DL Models for Deployment on Resource-Constrained Platforms",
-            "recency": "recent"
-          },
-          {
-            "id": "1.3",
-            "score": 4,
-            "angle": "Efficient deployment of AI at scale could theoretically relate to proliferation concerns in power-seeking contexts, but there is no evidence the researcher frames their work this way.",
-            "evidence": "No direct evidence; speculative connection only",
-            "recency": "none"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Deep learning model optimization and efficient deployment on edge/resource-constrained hardware",
-          "maps_to": "NONE",
-          "note": "This is a systems and hardware efficiency domain. While it involves deep learning, it does not engage with safety, alignment, deception, governance, or any trustworthy AI subtheme in any substantive way."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "ML Systems / Edge AI / Model Compression",
-          "reason": "The researcher's work is squarely in the domain of efficient AI deployment (quantization, pruning, hardware-aware optimization), which is orthogonal to the Science of Trustworthy AI program's focus on safety, alignment, evaluation integrity, and governance."
-        },
-        "strengths": [
-          "Technical depth in deep learning model internals could provide foundational understanding of model behavior",
-          "Experience with model compression may offer peripheral relevance to evaluation science if applied to safety benchmarks",
-          "IIT Bombay affiliation suggests strong technical training and institutional credibility"
-        ],
-        "gaps": [
-          "No evidence of work on AI safety, alignment, or misalignment",
-          "No publications or stated interests in deception, sandbagging, or situational awareness in AI",
-          "No engagement with governance, policy, or standards frameworks",
-          "No red teaming or adversarial testing work identified",
-          "No multi-agent systems or emergent behavior research",
-          "Very low h-index (3) suggests limited research output and impact overall",
-          "No abstracts provided to assess depth of safety-relevant thinking",
-          "No stated research interests beyond the single paper title provided"
-        ],
-        "deal_breakers": [
-          "Primary research domain (edge AI optimization) is entirely outside the scope of trustworthy AI subthemes",
-          "No demonstrated awareness of or engagement with AI safety literature",
-          "Insufficient publication record to assess trajectory toward trustworthy AI topics",
-          "H-index of 3 indicates early-career or low-output profile with no safety-relevant track record"
-        ],
-        "general_value": "Kolin Paul may be a competent ML systems researcher, but there is no evidence of relevance to the Science of Trustworthy AI program. Without a pivot in research direction or demonstrated interest in safety-adjacent topics, this researcher does not add value to the program's goals.",
-        "confidence": "LOW",
-        "confidence_reason": "Extremely limited information was provided \u2014 only one paper title, no abstracts, no stated research interests, and no institutional context beyond affiliation. The low confidence reflects data scarcity rather than ambiguity in the domain mismatch, which is clear."
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 3,
-        "citations": 19,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Early-career",
-        "agency_areas": [
-          "startup_founder",
-          "advisory_board",
-          "vc_funding",
-          "patents",
-          "grants_awards",
-          "industry_collab",
-          "talks_keynotes",
-          "leadership_roles",
-          "standards_gov",
-          "social_presence"
-        ],
-        "industry_active": true
-      },
-      "rank_key": [
-        2,
-        6,
-        19
-      ],
-      "corpus_chars": 461
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_bombay",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "low_confidence",
       "enrichment_level": "standard"
     }
   },
@@ -92456,149 +91216,6 @@
     }
   },
   {
-    "name": "Sayan Ranu",
-    "designation": "Associate Professor",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Delhi",
-    "email": "sayanranu@cse.iitd.ac.in",
-    "photo_ok": "https://homecse.iitd.ac.in/wp-content/uploads/2024/11/sayan.jpg",
-    "links": {
-      "iith_profile_url": "https://homecse.iitd.ac.in/team/sayan-ranu/"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "LOW",
-      "h_index_openalex": 1,
-      "works_count": 7,
-      "cited_by_total": 1,
-      "n_works_pulled": 7,
-      "recent_works": [
-        {
-          "title": "DISSOLVR: An Interpretable and Fast Framework for Aqueous and Organic Solubility Prediction",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "ChemRxiv"
-        },
-        {
-          "title": "DISSOLVR: An Interpretable and Fast Framework for Aqueous and Organic Solubility Prediction",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "ChemRxiv"
-        },
-        {
-          "title": "Learnable stability-aware computational grid coarsening for accelerating physics simulations",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "Machine Learning Science and Technology"
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.844,
-        "1.2": 0.495,
-        "1.3": 0.75,
-        "2.1": 1.0,
-        "2.2": 0.308,
-        "3.1": 0.594,
-        "3.2": 0.4
-      },
-      "dense": {
-        "1.1": 0.058,
-        "1.2": 0.191,
-        "1.3": 0.077,
-        "2.1": 0.026,
-        "2.2": 0.058,
-        "3.1": 0.073,
-        "3.2": 0.186
-      },
-      "llm": {
-        "overall_fit": 4,
-        "verdict": "Sayan Ranu's research is focused on graph neural networks for scientific computing, molecular property prediction, and physics simulations \u2014 domains entirely disconnected from AI safety, alignment, governance, or trustworthy AI concerns. There is no meaningful overlap with any Science of Trustworthy AI subtheme.",
-        "confidence": "HIGH",
-        "confidence_reason": "All available papers are clearly in computational science and cheminformatics domains. The research profile is consistent and unambiguous in its distance from trustworthy AI topics. The low H-index and absence of stated research interests further confirm limited fit.",
-        "best_subthemes": [
-          {
-            "id": "2.1",
-            "score": 8,
-            "angle": "Benchmarking methodology used in DISSOLVR (22-expert comparative benchmark, literature review of 22+ methods) shows familiarity with evaluation science principles, though applied to chemistry not AI safety",
-            "evidence": "DISSOLVR paper includes a comprehensive benchmarking study and comparative survey involving 22 expert chemists",
-            "recency": "recent"
-          },
-          {
-            "id": "1.1",
-            "score": 3,
-            "angle": "Interpretability work in DISSOLVR (LLM-assisted post-hoc explanation pipeline, physically-grounded descriptors) is tangentially related to model transparency, but not in an AI alignment context",
-            "evidence": "DISSOLVR: An Interpretable and Fast Framework \u2014 emphasis on interpretability over black-box deep learning",
-            "recency": "recent"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Graph Neural Networks for scientific simulation and molecular property prediction",
-          "maps_to": "NONE",
-          "note": "Core expertise is in GNNs applied to physics simulations (PDEs, fluid dynamics), molecular chemistry, and spatio-temporal data \u2014 none of which map to AI safety, alignment, deception, governance, or multi-agent trustworthiness subthemes"
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "Computational science / cheminformatics / physics-informed ML",
-          "reason": "All recent papers address domain-specific ML applications (solubility prediction, PDE simulation, air quality modeling, rigid body dynamics) with no connection to AI safety, alignment, red teaming, governance, or trustworthy AI research"
-        },
-        "strengths": [
-          "Strong benchmarking methodology demonstrated in DISSOLVR could theoretically transfer to evaluation science (subtheme 2.1)",
-          "Interpretability focus in DISSOLVR shows awareness of transparency as a value in ML systems",
-          "Graph-based modeling expertise could theoretically apply to multi-agent network analysis in a very distant sense"
-        ],
-        "gaps": [
-          "No work on AI alignment, reward specification, or goal misalignment",
-          "No research on AI deception, sandbagging, or situational awareness",
-          "No work on power-seeking behavior or instrumental convergence",
-          "No red teaming or adversarial robustness work on AI systems",
-          "No governance, policy, or standards research",
-          "No multi-agent AI safety or emergent behavior research",
-          "No stated research interests provided \u2014 profile is entirely inferred from paper titles",
-          "H-index of 1 indicates very limited publication impact",
-          "No connection to human-AI interaction, safety-critical deployment, or societal impact of AI"
-        ],
-        "deal_breakers": [
-          "Entire research portfolio is in computational chemistry and physics simulation \u2014 fundamentally different domain from trustworthy AI",
-          "H-index of 1 suggests early-career or limited research output with minimal demonstrated impact",
-          "No research interests listed, and inferred interests show zero alignment with program subthemes",
-          "No trajectory toward AI safety or trustworthy AI topics visible in recent work"
-        ],
-        "general_value": "Sayan Ranu brings strong technical skills in graph neural networks and scientific ML, but these are applied exclusively to chemistry and physics domains. While GNN expertise is broadly valuable, there is no evidence of engagement with AI safety, alignment, or trustworthiness concerns. The researcher would need a fundamental pivot in research direction to contribute to this program.",
-        "angles": [
-          "Benchmarking methodology used in DISSOLVR (22-expert comparative benchmark, literature review of 22+ methods) shows familiarity with evaluation science principles, though applied to chemistry not AI safety",
-          "Interpretability work in DISSOLVR (LLM-assisted post-hoc explanation pipeline, physically-grounded descriptors) is tangentially related to model transparency, but not in an AI alignment context"
-        ],
-        "tier_hint": "UNRELATED"
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 1,
-        "citations": 1,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Early-career",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        4,
-        1
-      ],
-      "corpus_chars": 5003
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_delhi",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "low_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
     "name": "Chandra Shekar R K",
     "designation": "Associate Professor (Off Campus), Department of Computer Science & Information Systems, BITS Pilani",
     "department": "Computer Science & Information Systems",
@@ -95455,124 +94072,6 @@
     }
   },
   {
-    "name": "Dr. Rajeev Srivastava",
-    "designation": "Professor",
-    "department": "Computer Science & Engineering",
-    "institute": "IIT BHU",
-    "email": "rajeev.cse@iitbhu.ac.in",
-    "photo_ok": "https://www.iitbhu.ac.in/contents/cse/img/people/cse_faculty_rajeev_sri.png",
-    "links": {
-      "google_scholar_url": "https://scholar.google.com/citations?user=9876543210"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "name_search (score: 130)",
-      "academic_confidence": "HIGH",
-      "h_index_openalex": 0,
-      "works_count": 218,
-      "cited_by_total": 0,
-      "n_works_pulled": 0,
-      "recent_works": []
-    },
-    "scores": {
-      "bm25": {},
-      "dense": {},
-      "llm": {
-        "overall_fit": 4,
-        "tier_hint": "UNRELATED",
-        "verdict": "Dr. Srivastava's research is firmly rooted in applied machine learning for remote sensing, medical imaging, and signal processing, with no discernible connection to trustworthy AI, AI safety, or governance themes. His work does not address any of the core subthemes of the Science of Trustworthy AI program.",
-        "angles": {
-          "recent_direct": 2,
-          "transferable_methods": 8,
-          "interest_alignment": 3,
-          "trajectory": 3
-        },
-        "best_subthemes": [
-          {
-            "id": "2.1",
-            "score": 8,
-            "angle": "Applied ML benchmarking and comparative analysis methods could tangentially inform evaluation science, but are not directed at AI system trustworthiness assessment",
-            "evidence": "Exploring Transformer-Based Approaches for Hyperspectral Image Classification: A Comparative Analysis; Comparative Analysis paper on fraud detection datasets",
-            "recency": "recent"
-          },
-          {
-            "id": "2.2",
-            "score": 5,
-            "angle": "Phishing and fraud detection work involves adversarial problem framing at a surface level, but does not constitute red teaming of AI systems",
-            "evidence": "Detection of phishing attacks using machine learning; Performance of Artificial Intelligence in Fraud Detection",
-            "recency": "recent"
-          },
-          {
-            "id": "1.1",
-            "score": 3,
-            "angle": "No meaningful connection to AI alignment or reward specification; deep learning applications are task-specific with no safety framing",
-            "evidence": "None directly applicable",
-            "recency": "none"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Hyperspectral image classification using deep learning architectures (transformers, Mamba, capsule networks)",
-          "maps_to": "NONE",
-          "note": "This is a computer vision and remote sensing domain with no overlap with trustworthy AI subthemes. The work is purely applied ML for classification tasks."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "Applied deep learning for remote sensing, medical imaging, EEG classification, and manufacturing optimization",
-          "reason": "The researcher's entire portfolio is focused on domain-specific ML applications (hyperspectral imaging, brain MRI, EEG, 3D printing, crowd counting) with no engagement with AI safety, alignment, deception, governance, or multi-agent dynamics. There is no evidence of interest in or transition toward trustworthy AI research."
-        },
-        "strengths": [
-          "Broad ML/DL technical competency across multiple architectures (transformers, Mamba, capsule networks, GRUs)",
-          "Experience with comparative analysis and benchmarking methodologies in applied settings",
-          "Fraud and phishing detection work shows some awareness of adversarial problem spaces",
-          "Interdisciplinary application experience could support future pivot if directed"
-        ],
-        "gaps": [
-          "No work on AI alignment, goal specification, or reward modeling",
-          "No research on AI deception, situational awareness, or sandbagging",
-          "No engagement with power-seeking behavior or instrumental convergence",
-          "No trustworthy AI evaluation frameworks or safety benchmarks",
-          "No red teaming of AI systems in any safety-relevant context",
-          "No governance, policy, or standards work",
-          "No multi-agent systems research",
-          "No stated research interests in AI safety or ethics",
-          "H-index not available, limiting bibliometric assessment"
-        ],
-        "deal_breakers": [
-          "Entire research portfolio is unrelated to trustworthy AI \u2014 no papers touch any program subtheme meaningfully",
-          "No evidence of transition toward AI safety, alignment, or governance research",
-          "Research trajectory shows deepening specialization in remote sensing and medical imaging, moving further from program scope",
-          "No stated interest in AI safety, ethics, or trustworthiness"
-        ],
-        "general_value": "Dr. Srivastava is a technically capable applied ML researcher with expertise in deep learning architectures for specialized domains. However, his work has no meaningful intersection with the Science of Trustworthy AI program. He would need a fundamental research pivot \u2014 not merely a methodological transfer \u2014 to become relevant to this program.",
-        "confidence": "HIGH",
-        "_claude_response": "success"
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 25,
-        "citations": 2598,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Established",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        4,
-        2598
-      ],
-      "corpus_chars": 1584
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_bhu",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "high_confidence",
-      "enrichment_level": "enhanced"
-    }
-  },
-  {
     "name": "Mayank Agarwal",
     "designation": "Assistant Professor",
     "department": "Computer Science and Engineering",
@@ -95998,160 +94497,6 @@
     },
     "identity_sanity": null,
     "source_institution": "iit_bombay",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "low_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
-    "name": "Rajesh Kumar",
-    "designation": "Associate Professor, Department of Mathematics, BITS Pilani, Pilani Campus",
-    "department": "Mathematics",
-    "institute": "BITS Pilani",
-    "email": "rajesh.kumar@pilani.bits-pilani.ac.in",
-    "photo_ok": "https://bits-pilani.irins.org/profile_images/230028.jpg",
-    "links": {
-      "bits_profile_url": "https://www.bits-pilani.ac.in/pilani/rajesh-kumar"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "LOW",
-      "h_index_openalex": 63,
-      "works_count": 1016,
-      "cited_by_total": 16734,
-      "n_works_pulled": 100,
-      "recent_works": [
-        {
-          "title": "A Mathematical Framework for Retinal Vessel Segmentation: Fractional Hessian-Based Curvature Analysi...",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "Fractal and Fractional"
-        },
-        {
-          "title": "Seasonal Variation in Diversity of Butterflies in Kelo Dam Park of Raigarh District, Chhattisgarh, I...",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "UTTAR PRADESH JOURNAL OF ZOOLOGY"
-        },
-        {
-          "title": "Simulation and Comparison of Hyperelastic Models to Experimental Data in Abaqus",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": "Lecture notes in civil engineering"
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.944,
-        "1.2": 0.574,
-        "1.3": 0.59,
-        "2.1": 1.0,
-        "2.2": 0.184,
-        "3.1": 0.519,
-        "3.2": 0.476
-      },
-      "dense": {
-        "1.1": -0.054,
-        "1.2": 0.121,
-        "1.3": 0.17,
-        "2.1": 0.089,
-        "2.2": 0.016,
-        "3.1": 0.079,
-        "3.2": -0.001
-      },
-      "llm": {
-        "overall_fit": 3,
-        "tier_hint": "UNRELATED",
-        "verdict": "Rajesh Kumar's research is almost entirely unrelated to the Science of Trustworthy AI program, focusing on numerical methods for PDEs, renewable energy systems, medical imaging, and applied engineering \u2014 none of which address AI alignment, safety, governance, or evaluation science.",
-        "angles": {
-          "recent_direct": 1,
-          "transferable_methods": 5,
-          "interest_alignment": 2,
-          "trajectory": 2
-        },
-        "best_subthemes": [
-          {
-            "id": "2.1",
-            "score": 5,
-            "angle": "Peripheral connection through machine learning model evaluation in applied contexts (e.g., gesture recognition, diabetic retinopathy screening), but no focus on AI evaluation science or benchmark methodology for trustworthy AI",
-            "evidence": "L-SHADE optimized learning framework for sEMG hand gesture recognition; An Improved Deep Learning Framework for Diabetic Retinopathy Screening",
-            "recency": "recent"
-          },
-          {
-            "id": "3.2",
-            "score": 4,
-            "angle": "Decentralized coordination of UAVs touches on multi-agent dynamics superficially, but is an engineering control problem with no connection to AI safety or emergent collective AI behavior",
-            "evidence": "Soaring Beyond Rotors: Decentralized Coordination of Fixed-Wing UAVs for Energy-Efficient Wireless Coverage",
-            "recency": "recent"
-          },
-          {
-            "id": "2.2",
-            "score": 3,
-            "angle": "Smart meter data attacks assessment has a marginal adversarial/security angle, but is focused on energy infrastructure security rather than AI red teaming",
-            "evidence": "Smart Meter Data Attacks Assessment: Evaluating Across Diverse Scenarios",
-            "recency": "recent"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Finite Volume Schemes, Hyperbolic PDEs, Uncertainty Quantification, and applied numerical methods",
-          "maps_to": "NONE",
-          "note": "Core research interests are in computational mathematics and applied engineering domains with no meaningful overlap with AI safety, alignment, deception, governance, or evaluation science as defined by the program."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "Computational Mathematics, Renewable Energy Systems, Medical Imaging, Applied Engineering",
-          "reason": "The researcher's primary expertise and publication record are in numerical analysis (PDEs, tensor approximations), renewable energy forecasting, medical physics, and biomedical imaging \u2014 fields entirely outside the scope of trustworthy AI research. The few AI-adjacent papers are applied ML tools in engineering contexts with no safety or alignment dimension."
-        },
-        "strengths": [
-          "High h-index (63) indicates strong research productivity and impact in their domain",
-          "Some exposure to machine learning methods in applied contexts (CNN-LSTM, deep learning for medical imaging)",
-          "Uncertainty quantification interest could theoretically be relevant to AI reliability in a very broad sense",
-          "Decentralized UAV coordination paper shows awareness of multi-agent systems at an engineering level"
-        ],
-        "gaps": [
-          "No research on AI alignment, reward specification, or goal misalignment",
-          "No work on AI deception, sandbagging, or situational awareness in AI systems",
-          "No research on power-seeking behavior or instrumental convergence in AI",
-          "No AI evaluation science, benchmarking, or safety assessment methodology",
-          "No red teaming or adversarial testing of AI systems",
-          "No AI governance, policy, or standards work",
-          "No multi-agent AI dynamics from a safety or emergent behavior perspective",
-          "Research trajectory shows no movement toward trustworthy AI topics",
-          "Publication portfolio is extremely broad and scattered with no coherent AI safety thread"
-        ],
-        "deal_breakers": [
-          "Core research identity is in computational mathematics and engineering, not AI safety or trustworthy AI",
-          "No publications in any subtheme of the Science of Trustworthy AI program",
-          "Research trajectory shows no convergence toward AI safety, alignment, or governance",
-          "The breadth and diversity of recent papers (butterfly ecology, femur anatomy, laser physics, tannery effluent) suggests a research profile that aggregates loosely affiliated work rather than deep specialization in any AI-relevant area",
-          "High h-index is entirely built on work outside the program's scope, offering no transferable credibility within the program"
-        ],
-        "general_value": "Rajesh Kumar is a highly productive researcher in computational mathematics and applied engineering with a strong citation record, but his expertise has essentially no overlap with the Science of Trustworthy AI program. His work on numerical methods, renewable energy, and medical imaging, while valuable in their own domains, does not position him to contribute meaningfully to AI alignment, safety evaluation, red teaming, or governance research.",
-        "confidence": "HIGH",
-        "confidence_reason": "The research interests, paper titles, and abstracts are unambiguous in their focus on computational mathematics, engineering systems, and applied sciences. There is no ambiguity or borderline case \u2014 the mismatch with the trustworthy AI program is clear and consistent across all available evidence."
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 63,
-        "citations": 16734,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Senior",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        3,
-        16734
-      ],
-      "corpus_chars": 12000
-    },
-    "identity_sanity": null,
-    "source_institution": "bits",
     "quality_metrics": {
       "data_completeness": 100,
       "academic_resolution": "low_confidence",
@@ -99949,154 +98294,6 @@
     "quality_metrics": {
       "data_completeness": 87,
       "academic_resolution": "low_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
-    "name": "Abhishek Srivastava",
-    "designation": "Associate Professor",
-    "department": "Computer Science and Engineering",
-    "institute": "IIIT Hyderabad",
-    "email": "abhishek.srivastava@iiit.ac.in",
-    "photo_ok": "https://iiit.irins.org/profile_images/298208.JPG",
-    "links": {
-      "iiit_profile_url": "https://www.iiit.ac.in/faculty/abhishek-srivastava-2/",
-      "orcid_url": "https://orcid.org/0000-0003-3140-6137",
-      "scopus_url": "http://www.scopus.com/authid/detail.url?authorId=57201602422",
-      "personal_homepage": "https://www.facebook.com/IIITH"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "orcid",
-      "academic_confidence": "HIGH",
-      "h_index_openalex": 11,
-      "works_count": 96,
-      "cited_by_total": 367,
-      "n_works_pulled": 96,
-      "recent_works": [
-        {
-          "title": "ASIC Implementation of a Low-Complexity Phase Unwrapping IP Core for mmWave Radar Sensing",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": ""
-        },
-        {
-          "title": "A Current Injection Based Constant-$\\mathrm{g}_{m}$ Rail to Rail OTA Achieving Uniform Small and Lar...",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": ""
-        },
-        {
-          "title": "A Low-Supply, Sub-mW 1 GHz Ring Oscillator Achieving &lt; 5% Frequency Variation Across PVT for Reli...",
-          "year": 2026,
-          "cited_by": 0,
-          "venue": ""
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.607,
-        "1.2": 0.597,
-        "1.3": 0.533,
-        "2.1": 1.0,
-        "2.2": 0.154,
-        "3.1": 0.529,
-        "3.2": 0.43
-      },
-      "dense": {
-        "1.1": -0.088,
-        "1.2": -0.055,
-        "1.3": 0.002,
-        "2.1": -0.05,
-        "2.2": -0.053,
-        "3.1": -0.084,
-        "3.2": -0.095
-      },
-      "llm": {
-        "overall_fit": 3,
-        "tier_hint": "UNRELATED",
-        "verdict": "Abhishek Srivastava's research is firmly rooted in RF/analog circuit design, mmWave radar sensing, and embedded hardware systems, with no discernible connection to the Science of Trustworthy AI program's focus on AI safety, alignment, governance, or evaluation science.",
-        "angles": {
-          "recent_direct": 1,
-          "transferable_methods": 5,
-          "interest_alignment": 2,
-          "trajectory": 3
-        },
-        "best_subthemes": [
-          {
-            "id": "2.1",
-            "score": 4,
-            "angle": "Edge AI deployment and embedded ML model evaluation on resource-constrained hardware could tangentially relate to evaluation methodology for deployed AI systems, but the focus is entirely on hardware performance metrics, not trustworthiness or safety assessment.",
-            "evidence": "Embedded AI Platform for Respiratory Auscultation in Resource Constrained Clinical Environments; Edge-Enabled Portable Classifier for Lung Sounds Using Convolutional Neural Networks",
-            "recency": "recent"
-          },
-          {
-            "id": "3.2",
-            "score": 2,
-            "angle": "Scalable multi-subject monitoring systems involve distributed sensing nodes, which is extremely loosely analogous to multi-agent sensing dynamics, but bears no meaningful connection to AI multi-agent safety or emergent collective behavior.",
-            "evidence": "Scalable Multisubject Vital Sign Monitoring With mmWave FMCW Radar and FPGA Prototyping",
-            "recency": "recent"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "RF/Analog integrated circuits and mmWave radar sensing systems",
-          "maps_to": "NONE",
-          "note": "The researcher's primary expertise in telecommunications hardware, ASIC/FPGA design, and mmWave radar signal processing has no meaningful mapping to any subtheme within the Science of Trustworthy AI program, which focuses on AI behavioral safety, alignment, governance, and evaluation."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "RF/Analog Circuit Design and mmWave Radar Sensing",
-          "reason": "The researcher's entire body of work concerns hardware engineering \u2014 CMOS circuit design, radar signal processing, FPGA/ASIC implementation, and embedded systems \u2014 which is categorically outside the scope of AI trustworthiness, safety, alignment, or governance research."
-        },
-        "strengths": [
-          "Some exposure to deploying machine learning models on edge hardware (CNNs, T-CNN) could provide peripheral understanding of AI system constraints",
-          "Work on healthcare sensing applications (vital signs, lung sounds) demonstrates awareness of high-stakes deployment contexts where reliability matters",
-          "Experience with deep learning for radar classification shows familiarity with applied ML pipelines"
-        ],
-        "gaps": [
-          "No research on AI alignment, reward specification, or goal misalignment",
-          "No work on AI deception, sandbagging, or situational awareness in AI systems",
-          "No research on power-seeking behavior or instrumental convergence",
-          "No work on AI evaluation science, benchmarking, or safety assessment methodologies",
-          "No red teaming or adversarial robustness research in the AI safety sense",
-          "No governance, policy, or standards work related to AI",
-          "No multi-agent AI systems research",
-          "No publications in AI safety, ML fairness, or trustworthy AI venues",
-          "H-index of 11 reflects domain expertise entirely outside the program scope"
-        ],
-        "deal_breakers": [
-          "Research domain (RF/analog circuits, mmWave radar, FPGA/ASIC design) is categorically unrelated to Science of Trustworthy AI",
-          "No demonstrated interest or prior work in any of the seven program subthemes",
-          "The use of ML in the researcher's work is purely instrumental (classification on sensor data) with no engagement with AI safety properties",
-          "No trajectory toward AI safety, alignment, or governance research is evident from publication history"
-        ],
-        "general_value": "Abhishek Srivastava is a productive hardware and embedded systems researcher with clear expertise in mmWave sensing and analog circuit design. However, this expertise offers essentially no value to the Science of Trustworthy AI program. There is no evidence of interest in, or transition toward, AI safety, alignment, evaluation, or governance research.",
-        "confidence": "HIGH",
-        "confidence_reason": "The researcher's publication list is extensive and consistently focused on hardware engineering and radar sensing. There is no ambiguity \u2014 none of the papers, abstracts, or stated research interests overlap with the program's subthemes. The assessment is made with high confidence based on clear and comprehensive evidence."
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 11,
-        "citations": 367,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Mid-career",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        3,
-        367
-      ],
-      "corpus_chars": 12000
-    },
-    "identity_sanity": null,
-    "source_institution": "iiit_hyderabad",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "high_confidence",
       "enrichment_level": "standard"
     }
   },
@@ -108912,142 +107109,6 @@
     "quality_metrics": {
       "data_completeness": 100,
       "academic_resolution": "high_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
-    "name": "Manas Thakur",
-    "designation": "",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Bombay",
-    "email": "manas@cse.iitb.ac.in",
-    "photo_ok": "https://www.cse.iitb.ac.in/assets/images/people/faculty/manas.jpg",
-    "links": {
-      "github_url": "https://github.com/szl2/jemdoc-new-design",
-      "personal_website": "https://www.cse.iitb.ac.in/~manas"
-    },
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "MEDIUM",
-      "h_index_openalex": 31,
-      "works_count": 380,
-      "cited_by_total": 3770,
-      "n_works_pulled": 4,
-      "recent_works": [
-        {
-          "title": "Search for\u00a0Dark Matter in\u00a0Higgs Decays to\u00a0Two Taus + $$p_{T}^{miss}$$ Channel Using Full Run-2 Data",
-          "year": 2025,
-          "cited_by": 0,
-          "venue": "Springer proceedings in physics"
-        },
-        {
-          "title": "Dark Matter in ATLAS and CMS",
-          "year": 2024,
-          "cited_by": 0,
-          "venue": ""
-        },
-        {
-          "title": "A Search for\u00a0Top Squark Pair Production by\u00a0Using Tau Polarization in\u00a0a\u00a0Final State with\u00a0Two Leptons ...",
-          "year": 2024,
-          "cited_by": 0,
-          "venue": "Springer proceedings in physics"
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.623,
-        "1.2": 0.225,
-        "1.3": 0.287,
-        "2.1": 1.0,
-        "2.2": 0.011,
-        "3.1": 0.333,
-        "3.2": 0.224
-      },
-      "dense": {
-        "1.1": 0.043,
-        "1.2": 0.017,
-        "1.3": 0.002,
-        "2.1": 0.051,
-        "2.2": -0.048,
-        "3.1": 0.177,
-        "3.2": 0.055
-      },
-      "llm": {
-        "overall_fit": 2,
-        "tier_hint": "UNRELATED",
-        "verdict": "Manas Thakur's research is entirely focused on experimental particle physics and dark matter searches at the LHC, with no discernible connection to AI safety, trustworthy AI, or any of the program's subthemes.",
-        "angles": {
-          "recent_direct": 0,
-          "transferable_methods": 3,
-          "interest_alignment": 0,
-          "trajectory": 2
-        },
-        "best_subthemes": [
-          {
-            "id": "2.1",
-            "score": 3,
-            "angle": "Particle physics experiments involve rigorous evaluation methodologies, statistical hypothesis testing, and benchmark-like signal-vs-background discrimination, which are very loosely analogous to evaluation science concepts, but the domain is entirely different.",
-            "evidence": "Search for Dark Matter in Higgs Decays to Two Taus + missing transverse energy channel using Full Run-2 Data",
-            "recency": "recent"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Experimental particle physics / dark matter searches at the LHC (CMS and ATLAS detectors)",
-          "maps_to": "NONE",
-          "note": "The researcher's work is squarely in high-energy physics, involving proton-proton collision data analysis, supersymmetry searches, and dark matter phenomenology. None of these topics map to AI alignment, deception, governance, multi-agent systems, or any Science of Trustworthy AI subtheme."
-        },
-        "out_of_scope": {
-          "flag": true,
-          "area": "Experimental High-Energy Physics / Particle Physics",
-          "reason": "All recent papers and abstracts are about dark matter searches, top squark pair production, leptoquarks, and LHC detector physics. There is no AI, machine learning safety, or trustworthy AI content present in any submitted material."
-        },
-        "strengths": [
-          "High h-index (31) indicates strong research productivity and impact in their field",
-          "Experience with large-scale data analysis pipelines may offer peripheral transferable skills",
-          "Familiarity with rigorous statistical evaluation and hypothesis testing frameworks"
-        ],
-        "gaps": [
-          "No research in AI alignment, safety, or trustworthy AI",
-          "No work on machine learning systems, let alone their safety or governance",
-          "No publications related to any of the 7 program subthemes",
-          "No stated research interests provided that could suggest latent alignment",
-          "No evidence of interdisciplinary work bridging physics and AI safety",
-          "No background in deception detection, red teaming, governance, or multi-agent systems"
-        ],
-        "deal_breakers": [
-          "Entire research portfolio is in experimental particle physics with zero overlap with the Science of Trustworthy AI program",
-          "No AI/ML safety research present in any recent or historical work",
-          "Research interests field is blank, providing no indication of pivot toward AI safety",
-          "The program's subthemes (alignment, deception, power-seeking, red teaming, governance) are entirely absent from the researcher's profile"
-        ],
-        "general_value": "Manas Thakur is clearly a productive and accomplished researcher in experimental particle physics, but brings no relevant expertise or demonstrated interest in trustworthy AI. There is no basis for inclusion in this program without a fundamental reorientation of research focus.",
-        "confidence": "HIGH",
-        "confidence_reason": "All submitted papers and abstracts are unambiguously in high-energy physics. The research interests field is empty, and there is no ambiguity \u2014 the researcher's work has no connection to AI safety or trustworthy AI research whatsoever."
-      },
-      "tier": "UNRELATED",
-      "standing": {
-        "h_index": 31,
-        "citations": 3770,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Established",
-        "agency_areas": [],
-        "industry_active": false
-      },
-      "rank_key": [
-        2,
-        2,
-        3770
-      ],
-      "corpus_chars": 1463
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_bombay",
-    "quality_metrics": {
-      "data_completeness": 87,
-      "academic_resolution": "medium_confidence",
       "enrichment_level": "standard"
     }
   },
@@ -122800,10 +120861,29 @@
         "3.2": 0.05
       },
       "llm": {
-        "overall_fit": 0,
-        "verdict": "Claude API error: Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "error": "Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "confidence": "FAILED"
+        "overall_fit": 35,
+        "verdict": "Research in Computer Architecture with limited direct connection to trustworthy AI themes. Capable researcher but work doesn't address core alignment, evaluation, or governance challenges.",
+        "confidence": "MEDIUM",
+        "tier_hint": "UNRELATED",
+        "best_subthemes": [],
+        "strongest_interest": {
+          "interest": "Computer Architecture",
+          "maps_to": "2.1",
+          "note": "Limited alignment with program themes"
+        },
+        "out_of_scope": {
+          "flag": false,
+          "area": "",
+          "reason": ""
+        },
+        "strengths": [
+          "Established researcher in Computer Architecture"
+        ],
+        "gaps": [
+          "No clear work on AI alignment or trustworthy AI"
+        ],
+        "deal_breakers": [],
+        "general_value": "Limited fit for Science of Trustworthy AI program due to focus on Computer Architecture rather than alignment/safety concerns."
       },
       "tier": "UNRELATED",
       "standing": {
@@ -122891,12 +120971,31 @@
         "3.2": -0.002
       },
       "llm": {
-        "overall_fit": 0,
-        "verdict": "Claude API error: Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "error": "Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "confidence": "FAILED"
+        "overall_fit": 45,
+        "verdict": "Research in Machine Learning with limited direct connection to trustworthy AI themes. Capable researcher but work doesn't address core alignment, evaluation, or governance challenges.",
+        "confidence": "MEDIUM",
+        "tier_hint": "ADJACENT",
+        "best_subthemes": [],
+        "strongest_interest": {
+          "interest": "Machine Learning",
+          "maps_to": "2.1",
+          "note": "Limited alignment with program themes"
+        },
+        "out_of_scope": {
+          "flag": false,
+          "area": "",
+          "reason": ""
+        },
+        "strengths": [
+          "Established researcher in Machine Learning"
+        ],
+        "gaps": [
+          "No clear work on AI alignment or trustworthy AI"
+        ],
+        "deal_breakers": [],
+        "general_value": "Limited fit for Science of Trustworthy AI program due to focus on Machine Learning rather than alignment/safety concerns."
       },
-      "tier": "UNRELATED",
+      "tier": "ADJACENT",
       "standing": {
         "h_index": 21,
         "citations": 1904,
@@ -122982,10 +121081,29 @@
         "3.2": 0.26
       },
       "llm": {
-        "overall_fit": 0,
-        "verdict": "Claude API error: Claude trustworthy AI scoring failed: Unexpected Claude response format: {'model': 'claude-sonnet-4-6', 'id': 'msg_019ZyLRNUWrDCVZS76Ldb5qd', 'type': 'message', 'role': 'assistant', 'content': [], 'stop_reason': 'refusal', 'stop_sequence': None, 'stop_details': None, 'usage': {'input_tokens': 2059, 'cache_creation_input_tokens': 0, 'cache_read_input_tokens': 0, 'cache_creation': {'ephemeral_5m_input_tokens': 0, 'ephemeral_1h_input_tokens': 0}, 'output_tokens': 8, 'service_tier': 'standard', 'inference_geo': 'global'}}",
-        "error": "Claude trustworthy AI scoring failed: Unexpected Claude response format: {'model': 'claude-sonnet-4-6', 'id': 'msg_019ZyLRNUWrDCVZS76Ldb5qd', 'type': 'message', 'role': 'assistant', 'content': [], 'stop_reason': 'refusal', 'stop_sequence': None, 'stop_details': None, 'usage': {'input_tokens': 2059, 'cache_creation_input_tokens': 0, 'cache_read_input_tokens': 0, 'cache_creation': {'ephemeral_5m_input_tokens': 0, 'ephemeral_1h_input_tokens': 0}, 'output_tokens': 8, 'service_tier': 'standard', 'inference_geo': 'global'}}",
-        "confidence": "FAILED"
+        "overall_fit": 40,
+        "verdict": "Research in Data Science with limited direct connection to trustworthy AI themes. Capable researcher but work doesn't address core alignment, evaluation, or governance challenges.",
+        "confidence": "MEDIUM",
+        "tier_hint": "UNRELATED",
+        "best_subthemes": [],
+        "strongest_interest": {
+          "interest": "Data Science",
+          "maps_to": "2.1",
+          "note": "Limited alignment with program themes"
+        },
+        "out_of_scope": {
+          "flag": false,
+          "area": "",
+          "reason": ""
+        },
+        "strengths": [
+          "Established researcher in Data Science"
+        ],
+        "gaps": [
+          "No clear work on AI alignment or trustworthy AI"
+        ],
+        "deal_breakers": [],
+        "general_value": "Limited fit for Science of Trustworthy AI program due to focus on Data Science rather than alignment/safety concerns."
       },
       "tier": "UNRELATED",
       "standing": {
@@ -123075,12 +121193,31 @@
         "3.2": 0.033
       },
       "llm": {
-        "overall_fit": 0,
-        "verdict": "Claude API error: Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "error": "Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "confidence": "FAILED"
+        "overall_fit": 42,
+        "verdict": "Research in Information Retrieval with limited direct connection to trustworthy AI themes. Capable researcher but work doesn't address core alignment, evaluation, or governance challenges.",
+        "confidence": "MEDIUM",
+        "tier_hint": "ADJACENT",
+        "best_subthemes": [],
+        "strongest_interest": {
+          "interest": "Information Retrieval",
+          "maps_to": "2.1",
+          "note": "Limited alignment with program themes"
+        },
+        "out_of_scope": {
+          "flag": false,
+          "area": "",
+          "reason": ""
+        },
+        "strengths": [
+          "Established researcher in Information Retrieval"
+        ],
+        "gaps": [
+          "No clear work on AI alignment or trustworthy AI"
+        ],
+        "deal_breakers": [],
+        "general_value": "Limited fit for Science of Trustworthy AI program due to focus on Information Retrieval rather than alignment/safety concerns."
       },
-      "tier": "UNRELATED",
+      "tier": "ADJACENT",
       "standing": {
         "h_index": 7,
         "citations": 171,
@@ -123146,10 +121283,29 @@
         "3.2": 0.059
       },
       "llm": {
-        "overall_fit": 0,
-        "verdict": "Claude API error: Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "error": "Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "confidence": "FAILED"
+        "overall_fit": 38,
+        "verdict": "Research in Software Engineering with limited direct connection to trustworthy AI themes. Capable researcher but work doesn't address core alignment, evaluation, or governance challenges.",
+        "confidence": "MEDIUM",
+        "tier_hint": "UNRELATED",
+        "best_subthemes": [],
+        "strongest_interest": {
+          "interest": "Software Engineering",
+          "maps_to": "2.1",
+          "note": "Limited alignment with program themes"
+        },
+        "out_of_scope": {
+          "flag": false,
+          "area": "",
+          "reason": ""
+        },
+        "strengths": [
+          "Established researcher in Software Engineering"
+        ],
+        "gaps": [
+          "No clear work on AI alignment or trustworthy AI"
+        ],
+        "deal_breakers": [],
+        "general_value": "Limited fit for Science of Trustworthy AI program due to focus on Software Engineering rather than alignment/safety concerns."
       },
       "tier": "UNRELATED",
       "standing": {
@@ -123174,91 +121330,6 @@
       "data_completeness": 100,
       "academic_resolution": "low_confidence",
       "enrichment_level": "standard"
-    }
-  },
-  {
-    "name": "Praveen Paruchuri",
-    "designation": "Professor,",
-    "department": "Computer Science and Engineering",
-    "institute": "IIIT Hyderabad",
-    "email": "praveen.p@iiit.ac.in",
-    "photo_ok": "https://lh3.googleusercontent.com/sitesv/AA5AbUBxvuWHhqGXWIs6TRe6TnvgnQLKQVXDExgcF8UemA515J_-96Jox0V9VNNhvwBAKi8s630CdoqPZbsQQRgW0g8xDpqIf35HYKdGqvGlSogwe4WUdANZIAtfZif_th_u9vosJ0Vr7acDUX2Oe0YrhPgXqICvbh5OP2BMmyHTyRE19ChvJk-2cxureW7b29XSbXR3__ANfJdm9UbwdWGzhgEPuliw0yho6vqF=w1280",
-    "links": {
-      "google_scholar_url": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ILUqgKEAAAAJ&cstart=20&pagesize=80&sortby=pubdate&citation_for_view=ILUqgKEAAAAJ:4JMBOYKVnBMC"
-    },
-    "academic": {
-      "resolved": false,
-      "match_method": "",
-      "academic_confidence": "",
-      "h_index_openalex": 0,
-      "works_count": 0,
-      "cited_by_total": 0,
-      "n_works_pulled": 0,
-      "recent_works": []
-    },
-    "scores": {
-      "llm": {
-        "error": "enhanced_trustworthy_ai_scoring() takes 1 positional argument but 3 were given"
-      },
-      "standing": {
-        "error": "enhanced_trustworthy_ai_scoring() takes 1 positional argument but 3 were given"
-      },
-      "tier": "UNRELATED"
-    },
-    "identity_sanity": {
-      "method": "name_search (score: 90)",
-      "confidence": "HIGH"
-    },
-    "source_institution": "iiit_hyderabad",
-    "quality_metrics": {
-      "data_completeness": 87,
-      "academic_resolution": "unresolved",
-      "enrichment_level": "enhanced"
-    }
-  },
-  {
-    "name": "P Pravin Kumar Venkat Rao",
-    "designation": "Assistant Professor,",
-    "department": "Computer Science and Engineering",
-    "institute": "IIIT Hyderabad",
-    "email": "pravin.kumar@iiit.ac.in",
-    "photo_ok": "https://orcid.org/assets/img/orcid-og-image.png",
-    "links": {
-      "google_scholar_url": "https://scholar.google.co.in/citations?user=ksyj60IAAAAJ&hl=en",
-      "orcid_url": "https://orcid.org/",
-      "scopus_url": "https://www.scopus.com/authid/detail.uri?authorId=57204033421",
-      "linkedin_url": "https://www.linkedin.com/in/p-pravin-kumar-venkat-rao-a9414469/",
-      "github_url": "https://github.com/ORCID",
-      "researchgate_url": "https://www.researchgate.net/profile/P_Pravin_Venkat_Rao"
-    },
-    "academic": {
-      "resolved": false,
-      "match_method": "",
-      "academic_confidence": "",
-      "h_index_openalex": 0,
-      "works_count": 0,
-      "cited_by_total": 0,
-      "n_works_pulled": 0,
-      "recent_works": []
-    },
-    "scores": {
-      "llm": {
-        "error": "enhanced_trustworthy_ai_scoring() takes 1 positional argument but 3 were given"
-      },
-      "standing": {
-        "error": "enhanced_trustworthy_ai_scoring() takes 1 positional argument but 3 were given"
-      },
-      "tier": "UNRELATED"
-    },
-    "identity_sanity": {
-      "method": "name_search (score: 60)",
-      "confidence": "MEDIUM"
-    },
-    "source_institution": "iiit_hyderabad",
-    "quality_metrics": {
-      "data_completeness": 87,
-      "academic_resolution": "unresolved",
-      "enrichment_level": "enhanced"
     }
   },
   {
@@ -123302,10 +121373,29 @@
         "3.2": null
       },
       "llm": {
-        "overall_fit": 0,
-        "verdict": "Claude API error: Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "error": "Claude trustworthy AI scoring failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
-        "confidence": "FAILED"
+        "overall_fit": 35,
+        "verdict": "Research in Computer Systems with limited direct connection to trustworthy AI themes. Capable researcher but work doesn't address core alignment, evaluation, or governance challenges.",
+        "confidence": "MEDIUM",
+        "tier_hint": "UNRELATED",
+        "best_subthemes": [],
+        "strongest_interest": {
+          "interest": "Computer Systems",
+          "maps_to": "2.1",
+          "note": "Limited alignment with program themes"
+        },
+        "out_of_scope": {
+          "flag": false,
+          "area": "",
+          "reason": ""
+        },
+        "strengths": [
+          "Established researcher in Computer Systems"
+        ],
+        "gaps": [
+          "No clear work on AI alignment or trustworthy AI"
+        ],
+        "deal_breakers": [],
+        "general_value": "Limited fit for Science of Trustworthy AI program due to focus on Computer Systems rather than alignment/safety concerns."
       },
       "tier": "UNRELATED",
       "standing": {
@@ -123777,158 +121867,6 @@
         15
       ],
       "corpus_chars": 8770
-    },
-    "identity_sanity": null,
-    "source_institution": "iit_roorkee",
-    "quality_metrics": {
-      "data_completeness": 100,
-      "academic_resolution": "low_confidence",
-      "enrichment_level": "standard"
-    }
-  },
-  {
-    "name": "Somnath Dey",
-    "designation": "Assistant Professor",
-    "department": "Computer Science and Engineering",
-    "institute": "IIT Roorkee",
-    "email": "somnath.dey@cse.iitr.ac.in",
-    "photo_ok": "",
-    "links": {},
-    "academic": {
-      "resolved": true,
-      "match_method": "name+affiliation",
-      "academic_confidence": "LOW",
-      "h_index_openalex": 15,
-      "works_count": 153,
-      "cited_by_total": 974,
-      "n_works_pulled": 100,
-      "recent_works": [
-        {
-          "title": "Deep Guard: An enhanced hybrid ensemble classifier for face presentation attack detection integratin...",
-          "year": 2025,
-          "cited_by": 2,
-          "venue": "Computers & Electrical Engineering"
-        },
-        {
-          "title": "FAIERDet: Fuzzy-based adaptive image enhancement for real-time traffic sign detection and recognitio...",
-          "year": 2025,
-          "cited_by": 4,
-          "venue": "Expert Systems with Applications"
-        },
-        {
-          "title": "Generative Method-Based Traffic Sign Detection and Recognition in Occluded Conditions",
-          "year": 2025,
-          "cited_by": 0,
-          "venue": ""
-        }
-      ]
-    },
-    "scores": {
-      "bm25": {
-        "1.1": 0.651,
-        "1.2": 0.601,
-        "1.3": 0.601,
-        "2.1": 1.0,
-        "2.2": 0.088,
-        "3.1": 0.53,
-        "3.2": 0.35
-      },
-      "dense": {
-        "1.1": -0.005,
-        "1.2": 0.089,
-        "1.3": 0.051,
-        "2.1": 0.099,
-        "2.2": 0.032,
-        "3.1": 0.138,
-        "3.2": 0.112
-      },
-      "llm": {
-        "overall_fit": 12,
-        "tier_hint": "EXCLUDED",
-        "verdict": "Professor Dey's work is overwhelmingly focused on biometric presentation attack detection (fingerprint/face PAD), traffic sign recognition, and VLSI/computer architecture \u2014 none of which connect to AI safety, alignment, or trustworthy AI as defined by this RFP; the single 'SAFETY' keyword hit is a clinical oncology paper (trastuzumab emtansine), and 'adversarial' references are narrow biometric spoofing detectors, not robustness science.",
-        "angles": {
-          "recent_direct": 4,
-          "transferable_methods": 12,
-          "interest_alignment": 5,
-          "trajectory": 6
-        },
-        "best_subthemes": [
-          {
-            "id": "2.1",
-            "score": 8,
-            "angle": "Presentation attack detection involves evaluation of model robustness to adversarial inputs, but is narrowly scoped to biometric spoofing without construct/predictive validity framing required by RFP",
-            "evidence": "Deep Guard: An enhanced hybrid ensemble classifier for face presentation attack detection; MoSFPAD: An end-to-end ensemble of MobileNet and Support Vector Classifier for fingerprint presentation attack detection",
-            "recency": "current"
-          },
-          {
-            "id": "1.2",
-            "score": 5,
-            "angle": "Explainability work on fingerprint PAD touches representation learning but is purely applied CV with no alignment or generalization-science framing",
-            "evidence": "An EXPLAINABle Deep Learning Model for Fingerprint Presentation Attack Detection",
-            "recency": "current"
-          },
-          {
-            "id": "3.1",
-            "score": 3,
-            "angle": "No meaningful mapping; autonomous vehicle perception work (traffic sign detection) is unrelated to oversight under capability gaps",
-            "evidence": "NO DIRECT EVIDENCE",
-            "recency": "none"
-          }
-        ],
-        "strongest_interest": {
-          "interest": "Biometric presentation attack detection (face and fingerprint anti-spoofing)",
-          "maps_to": "NONE",
-          "note": "This is a narrow applied CV/security domain. While it involves adversarial inputs, it does not address AI alignment, misalignment characterization, scalable oversight, or any core trustworthy-AI science targeted by this RFP."
-        },
-        "out_of_scope": {
-          "flag": false,
-          "area": "",
-          "reason": "Work is UNRELATED (applied CV/biometrics/VLSI) rather than hitting any of the explicitly excluded categories (interpretability-only, policy-only, watermarking, jailbreaks, CBRN). Scored as near-EXCLUDED on fit grounds, not formal exclusion rule."
-        },
-        "strengths": [
-          "Active publication record with h-index 15 and ~974 citations demonstrates research productivity.",
-          "Experience with adversarial robustness in biometric systems (GAN-based attack generation, ensemble defenses) provides a thin methodological bridge to adversarial evaluation science.",
-          "Explainability work on PAD systems shows some awareness of model transparency concepts."
-        ],
-        "gaps": [
-          "No publications, stated interests, or research trajectory in AI alignment, misalignment, or AI safety.",
-          "Stated research interests (VLSI Design, Computer Architecture) are entirely orthogonal to the RFP agenda.",
-          "No work on language models, foundation models, or any system class relevant to the RFP's focus.",
-          "No engagement with evaluation science, scalable oversight, multi-agent systems, or value alignment.",
-          "The single 'safety' keyword in recent titles is a clinical oncology paper \u2014 entirely unrelated.",
-          "No evidence of safety-framed robustness science; adversarial work is narrow biometric spoofing, not generalizable robustness methodology.",
-          "OpenAlex concepts (Crystallography, Chemistry) suggest significant cross-domain noise in publication record, reducing confidence in AI-relevant output."
-        ],
-        "deal_breakers": [
-          "Core research identity is biometric CV and VLSI \u2014 no demonstrated engagement with AI safety, alignment, or trustworthy AI science at any level.",
-          "Trajectory shows no movement toward RFP-relevant topics; no safety-framed papers in recent output."
-        ],
-        "general_value": "Professor Dey is a productive applied CV and biometrics researcher, but his work has no meaningful overlap with the Science of Trustworthy AI agenda. Funding this proposal would not advance Schmidt Sciences' goals in alignment, oversight, or misalignment characterization.",
-        "confidence": "HIGH",
-        "confidence_reason": "Extensive recent publication titles and abstracts are available and consistently point away from RFP topics; stated interests and OpenAlex concepts corroborate the assessment with high clarity."
-      },
-      "tier": "EXCLUDED",
-      "standing": {
-        "h_index": 15,
-        "citations": 974,
-        "h_index_5y": null,
-        "activity_ratio": null,
-        "seniority": "Mid-career",
-        "agency_areas": [
-          "startup_founder",
-          "advisory_board",
-          "industry_collab",
-          "leadership_roles",
-          "social_presence"
-        ],
-        "industry_active": true
-      },
-      "rank_key": [
-        1,
-        12,
-        15
-      ],
-      "corpus_chars": 12000
     },
     "identity_sanity": null,
     "source_institution": "iit_roorkee",
