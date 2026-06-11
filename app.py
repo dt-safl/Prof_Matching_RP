@@ -306,6 +306,12 @@ st.markdown("""
 def load():
     if not os.path.exists(config.OUT_JSON):
         return []
+    # Include file modification time in cache key to auto-invalidate when data updates
+    file_mtime = os.path.getmtime(config.OUT_JSON)
+    return _load_data_with_mtime(file_mtime)
+
+def _load_data_with_mtime(mtime):
+    """Helper function that includes file modification time for proper cache invalidation."""
     return json.load(open(config.OUT_JSON))
 
 
