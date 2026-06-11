@@ -578,7 +578,12 @@ def home():
         tier = sc.get("tier", "UNRELATED")
         institute = d.get("institute", "Unknown")
         llm = sc.get("llm", {})
-        standing = sc.get("standing") or {}  # Handle None case
+        standing_raw = sc.get("standing")
+        # Handle None, float, or other non-dict cases
+        if isinstance(standing_raw, dict):
+            standing = standing_raw
+        else:
+            standing = {}  # Default for None, float, or any other type
 
         # Apply basic filters
         if tier not in show:
@@ -624,7 +629,9 @@ def home():
         if sort_key == "overall_fit":
             return sc.get("llm", {}).get("overall_fit", 0)
         elif sort_key == "h_index":
-            return (sc.get("standing") or {}).get("h_index", 0) or 0
+            standing_raw = sc.get("standing")
+            standing = standing_raw if isinstance(standing_raw, dict) else {}
+            return standing.get("h_index", 0) or 0
         elif sort_key in ["1.1", "1.2", "1.3", "2.1", "2.2", "3.1", "3.2"]:
             themes = {theme.get("id"): theme.get("score", 0) for theme in sc.get("llm", {}).get("best_subthemes", [])}
             return themes.get(sort_key, 0)
@@ -643,7 +650,8 @@ def home():
         sc = d.get("scores", {})
         tier = sc.get("tier", "UNRELATED")
         llm = sc.get("llm", {})
-        stand = sc.get("standing") or {}
+        standing_raw = sc.get("standing")
+        stand = standing_raw if isinstance(standing_raw, dict) else {}
         fit_score = llm.get("overall_fit", 0)
 
         # Determine card type based on fit score and tier
@@ -705,7 +713,8 @@ def detail(prof_data):
     if st.button("← Back to ranking"):
         st.session_state.sel_data = None; st.rerun()
     ac = d.get("academic", {}); sc = d.get("scores", {}); llm = sc.get("llm", {})
-    stand = sc.get("standing") or {}; tier = sc.get("tier", "UNRELATED")
+    standing_raw = sc.get("standing")
+    stand = standing_raw if isinstance(standing_raw, dict) else {}; tier = sc.get("tier", "UNRELATED")
 
     head = st.columns([0.13, 0.87])
     if d.get("photo_ok"):
