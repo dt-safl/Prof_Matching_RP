@@ -20,7 +20,6 @@ TIER = {
     "ADJACENT":  ("#2f6fb0", "Adjacent",     "Transferable methods/topics applicable to the agenda."),
     "UNRELATED": ("#8a8f98", "Unrelated",    "Capable researcher, but work doesn't address the agenda."),
     "EXCLUDED":  ("#b3382f", "Out of scope", "Core area is explicitly excluded by this RFP (e.g. interpretability)."),
-    "MISSING":   ("#6b7280", "Incomplete",   "Scoring pipeline did not complete for this profile."),
 }
 ST_TITLE = {t["id"]: t["title"] for t in SUBTHEMES}
 
@@ -236,7 +235,6 @@ st.markdown("""
  .badge.adjacent { background: #3B82F6; color: white; }
  .badge.unrelated { background: #F59E0B; color: white; }
  .badge.excluded { background: #EF4444; color: white; }
- .badge.missing { background: #6B7280; color: white; }
 
  .chip {
    display: inline-block;
@@ -305,14 +303,16 @@ st.markdown("""
 
 
 @st.cache_data
-def _load_cached(mtime: float):
-    """Cache keyed by file mtime so data auto-refreshes when the JSON is updated."""
-    return json.load(open(config.OUT_JSON))
-
 def load():
     if not os.path.exists(config.OUT_JSON):
         return []
-    return _load_cached(os.path.getmtime(config.OUT_JSON))
+    # Include file modification time in cache key to auto-invalidate when data updates
+    file_mtime = os.path.getmtime(config.OUT_JSON)
+    return _load_data_with_mtime(file_mtime)
+
+def _load_data_with_mtime(mtime):
+    """Helper function that includes file modification time for proper cache invalidation."""
+    return json.load(open(config.OUT_JSON))
 
 
 def badge(t):
@@ -320,11 +320,10 @@ def badge(t):
         "DIRECT": "direct",
         "ADJACENT": "adjacent",
         "UNRELATED": "unrelated",
-        "EXCLUDED": "excluded",
-        "MISSING": "missing",
+        "EXCLUDED": "excluded"
     }
     _, lbl, _ = TIER.get(t, ("", t, ""))
-    css_class = tier_classes.get(t, "missing")
+    css_class = tier_classes.get(t, "unrelated")
     return f'<span class="badge {css_class}">{lbl}</span>'
 
 def impact_standing(seniority, h_index=None):
@@ -436,6 +435,9 @@ data = load()
 BM_AVG, DN_AVG = cohort_stats(data) if data else ({}, {})
 if "sel_data" not in st.session_state:
     st.session_state.sel_data = None
+if "page" not in st.session_state:
+    st.session_state.page = 0
+PAGE_SIZE = 20
 
 
 # ============================== legend / rubric (shared) ==============================
@@ -476,8 +478,6 @@ talks / network). This answers "how strong are they, and *for what*", independen
 
 
 # ============================== HOME ==============================
-PAGE_SIZE = 20
-
 def home():
     st.markdown('<h1 class="main-title">Researcher → Proposal Match</h1>', unsafe_allow_html=True)
     st.markdown('<p class="secondary-text">Schmidt Sciences · Science of Trustworthy AI (2026) — evidence-based fit analysis</p>', unsafe_allow_html=True)
@@ -488,109 +488,114 @@ def home():
 
     rubric_expander()
 
-    # ── Build institutions list once ──────────────────────────────────────────
-    all_institutions = sorted(set(d.get("institute", "Unknown") for d in data if d.get("institute")))
-    sort_options = {
-        "Overall Fit (High to Low)": ("overall_fit", True),
-        "Overall Fit (Low to High)": ("overall_fit", False),
-        "H-Index (High to Low)": ("h_index", True),
-        "H-Index (Low to High)": ("h_index", False),
-        "Theme 1.1 Score": ("1.1", True),
-        "Theme 1.2 Score": ("1.2", True),
-        "Theme 1.3 Score": ("1.3", True),
-        "Theme 2.1 Score": ("2.1", True),
-        "Theme 2.2 Score": ("2.2", True),
-        "Theme 3.1 Score": ("3.1", True),
-        "Theme 3.2 Score": ("3.2", True),
-        "Institute Name": ("institute", False),
-        "Professor Name": ("name", False),
-    }
+    # Summary stats with better styling
+    tiers = [d.get("scores", {}).get("tier", "UNRELATED") for d in data if "scores" in d]
 
-    # ── Session-state defaults (only set once; preserved across reruns) ───────
-    if "f_show" not in st.session_state:
-        st.session_state["f_show"] = list(TIER)
-    if "f_institutions" not in st.session_state:
-        st.session_state["f_institutions"] = all_institutions
-    if "f_sort" not in st.session_state:
-        st.session_state["f_sort"] = list(sort_options.keys())[0]
-    if "f_min_fit" not in st.session_state:
-        st.session_state["f_min_fit"] = 0
-    if "f_min_h" not in st.session_state:
-        st.session_state["f_min_h"] = 0
-    if "f_theme" not in st.session_state:
-        st.session_state["f_theme"] = "All Themes"
-    if "f_min_theme_score" not in st.session_state:
-        st.session_state["f_min_theme_score"] = 0
-    if "f_search" not in st.session_state:
-        st.session_state["f_search"] = ""
-    if "page" not in st.session_state:
-        st.session_state["page"] = 0
+    st.markdown('<h2 class="section-title">Portfolio Overview</h2>', unsafe_allow_html=True)
+    cols = st.columns(4)
+    for col, t in zip(cols, ["DIRECT", "ADJACENT", "UNRELATED", "EXCLUDED"]):
+        count = tiers.count(t)
+        col.markdown(f"""
+        <div class="card card-neutral" style="text-align: center; padding: 16px;">
+            {badge(t)}<br>
+            <div class="metric-value" style="font-size: 24px; margin: 8px 0;">{count}</div>
+            <div class="muted-text" style="font-size: 11px;">{TIER[t][2][:40]}...</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # ── Filters & Sorting section ─────────────────────────────────────────────
-    st.markdown('<h2 class="section-title">Filters &amp; Sorting</h2>', unsafe_allow_html=True)
+    # Enhanced Filters and Sorting section
+    st.markdown('<h2 class="section-title">Filters & Sorting</h2>', unsafe_allow_html=True)
 
     filter_col1, filter_col2, filter_col3 = st.columns([1, 1, 1])
 
     with filter_col1:
-        show = st.multiselect("Filter by tier", list(TIER), key="f_show", format_func=lambda t: TIER[t][1])
+        show = st.multiselect("Filter by tier", list(TIER), default=list(TIER), format_func=lambda t: TIER[t][1])
 
     with filter_col2:
-        show_institutions = st.multiselect("Filter by institution", all_institutions, key="f_institutions")
+        # Get unique institutions from data
+        institutions = list(set(d.get("institute", "Unknown") for d in data if d.get("institute")))
+        institutions.sort()
+        show_institutions = st.multiselect("Filter by institution", institutions, default=institutions)
 
     with filter_col3:
-        sort_by = st.selectbox("Sort by", list(sort_options.keys()), key="f_sort")
+        # Sorting options
+        sort_options = {
+            "Overall Fit (High to Low)": ("overall_fit", True),
+            "Overall Fit (Low to High)": ("overall_fit", False),
+            "H-Index (High to Low)": ("h_index", True),
+            "H-Index (Low to High)": ("h_index", False),
+            "Theme 1.1 Score": ("1.1", True),
+            "Theme 1.2 Score": ("1.2", True),
+            "Theme 1.3 Score": ("1.3", True),
+            "Theme 2.1 Score": ("2.1", True),
+            "Theme 2.2 Score": ("2.2", True),
+            "Theme 3.1 Score": ("3.1", True),
+            "Theme 3.2 Score": ("3.2", True),
+            "Institute Name": ("institute", False),
+            "Professor Name": ("name", False)
+        }
+
+        sort_by = st.selectbox("Sort by", list(sort_options.keys()), index=0)
         sort_key, sort_desc = sort_options[sort_by]
 
+    # Advanced filters
     adv_col1, adv_col2, adv_col3 = st.columns([1, 1, 1])
 
     with adv_col1:
-        min_fit = st.slider("Minimum Overall Fit Score", 0, 100, key="f_min_fit")
+        min_fit = st.slider("Minimum Overall Fit Score", 0, 100, 0)
 
     with adv_col2:
-        min_h_index = st.slider("Minimum H-Index", 0, 100, key="f_min_h")
+        min_h_index = st.slider("Minimum H-Index", 0, 100, 0)
 
     with adv_col3:
-        theme_choices = ["All Themes", "1.1 (AI Alignment)", "1.2 (Deception)", "1.3 (Power-Seeking)",
-                         "2.1 (Evaluation)", "2.2 (Red Teaming)", "3.1 (Governance)", "3.2 (Multi-Agent)"]
-        theme_filter = st.selectbox("Filter by Theme Score", theme_choices, key="f_theme")
-        if theme_filter != "All Themes":
-            min_theme_score = st.slider(f"Minimum {theme_filter} Score", 0, 100, key="f_min_theme_score")
-        else:
-            min_theme_score = 0
+        theme_filter = st.selectbox("Filter by Theme Score",
+                                  ["All Themes", "1.1 (AI Alignment)", "1.2 (Deception)", "1.3 (Power-Seeking)",
+                                   "2.1 (Evaluation)", "2.2 (Red Teaming)", "3.1 (Governance)", "3.2 (Multi-Agent)"])
 
+        if theme_filter != "All Themes":
+            theme_id = theme_filter.split()[0]
+            min_theme_score = st.slider(f"Minimum {theme_filter} Score", 0, 100, 0)
+
+    # Text search and apply button
     search_col1, search_col2, search_col3 = st.columns([2, 1, 1])
 
     with search_col1:
-        search_text = st.text_input("🔍 Search by name, institute, or research interests",
-                                    placeholder="e.g. machine learning, neural networks, IIT Delhi...",
-                                    key="f_search")
+        search_text = st.text_input("🔍 Search by name, institute, or research interests", placeholder="e.g. machine learning, neural networks, IIT Delhi...")
 
     with search_col2:
-        st.button("🎯 Apply Filters", type="primary")  # widgets already reactive; kept for UX
+        apply_filters = st.button("🎯 Apply Filters", type="primary")
 
     with search_col3:
-        if st.button("🗑️ Clear All"):
-            for k in ["f_show", "f_institutions", "f_sort", "f_min_fit", "f_min_h",
-                      "f_theme", "f_min_theme_score", "f_search", "page"]:
-                st.session_state.pop(k, None)
-            st.rerun()
+        clear_filters = st.button("🗑️ Clear All")
 
-    # ── Apply filtering ────────────────────────────────────────────────────────
+    # Handle clear filters
+    if clear_filters:
+        st.rerun()
+
+    st.markdown('<h2 class="section-title">Ranked Candidates</h2>', unsafe_allow_html=True)
+
+    # Apply filtering and sorting
     filtered_data = []
     for d in data:
         sc = d.get("scores", {})
-        tier = sc.get("tier") or "MISSING"
+        tier = sc.get("tier", "UNRELATED")
         institute = d.get("institute", "Unknown")
         llm = sc.get("llm", {})
         standing_raw = sc.get("standing")
-        standing = standing_raw if isinstance(standing_raw, dict) else {}
+        # Handle None, float, or other non-dict cases
+        if isinstance(standing_raw, dict):
+            standing = standing_raw
+        else:
+            standing = {}  # Default for None, float, or any other type
 
+        # Apply basic filters
         if tier not in show:
             continue
         if institute not in show_institutions:
             continue
 
-        fit_score = llm.get("overall_fit", 0) or 0
+        # Apply advanced filters
+        fit_score = llm.get("overall_fit", 0)
         h_index = standing.get("h_index", 0) or 0
 
         if fit_score < min_fit:
@@ -598,36 +603,40 @@ def home():
         if h_index < min_h_index:
             continue
 
+        # Apply theme-specific filter
         if theme_filter != "All Themes":
             theme_id = theme_filter.split()[0]
-            themes = {th.get("id"): th.get("score", 0) for th in (llm.get("best_subthemes") or [])}
-            if themes.get(theme_id, 0) < min_theme_score:
+            themes = {theme.get("id"): theme.get("score", 0) for theme in llm.get("best_subthemes", [])}
+            theme_score = themes.get(theme_id, 0)
+            if theme_score < min_theme_score:
                 continue
 
+        # Apply text search filter
         if search_text:
             search_lower = search_text.lower()
-            searchable = " ".join([
+            searchable_text = " ".join([
                 d.get("name", "").lower(),
                 d.get("institute", "").lower(),
-                str(d.get("research_interests", "")).lower(),
+                d.get("research_interests", "").lower(),
                 d.get("designation", "").lower(),
-                (llm.get("verdict") or "").lower(),
+                llm.get("verdict", "").lower()
             ])
-            if search_lower not in searchable:
+            if search_lower not in searchable_text:
                 continue
 
         filtered_data.append(d)
 
-    # ── Sort ──────────────────────────────────────────────────────────────────
+    # Sort the filtered data
     def get_sort_value(prof):
         sc = prof.get("scores", {})
         if sort_key == "overall_fit":
-            return sc.get("llm", {}).get("overall_fit", 0) or 0
+            return sc.get("llm", {}).get("overall_fit", 0)
         elif sort_key == "h_index":
-            sr = sc.get("standing")
-            return (sr if isinstance(sr, dict) else {}).get("h_index", 0) or 0
+            standing_raw = sc.get("standing")
+            standing = standing_raw if isinstance(standing_raw, dict) else {}
+            return standing.get("h_index", 0) or 0
         elif sort_key in ["1.1", "1.2", "1.3", "2.1", "2.2", "3.1", "3.2"]:
-            themes = {th.get("id"): th.get("score", 0) for th in (sc.get("llm", {}).get("best_subthemes") or [])}
+            themes = {theme.get("id"): theme.get("score", 0) for theme in sc.get("llm", {}).get("best_subthemes", [])}
             return themes.get(sort_key, 0)
         elif sort_key == "institute":
             return prof.get("institute", "")
@@ -637,161 +646,103 @@ def home():
 
     sorted_data = sorted(filtered_data, key=get_sort_value, reverse=sort_desc)
 
-    # ── Portfolio Overview (based on current filter) ──────────────────────────
-    st.markdown('<h2 class="section-title">Portfolio Overview</h2>', unsafe_allow_html=True)
-    ov_tiers = [d.get("scores", {}).get("tier") or "MISSING" for d in sorted_data]
-    ov_cols = st.columns(5)
-    for col, t in zip(ov_cols, ["DIRECT", "ADJACENT", "UNRELATED", "EXCLUDED", "MISSING"]):
-        count = ov_tiers.count(t)
-        col.markdown(f"""
-        <div class="card card-neutral" style="text-align: center; padding: 16px;">
-            {badge(t)}<br>
-            <div class="metric-value" style="font-size: 24px; margin: 8px 0;">{count}</div>
-            <div class="muted-text" style="font-size: 11px;">{TIER[t][2][:40]}...</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # ── Pagination controls (top) ─────────────────────────────────────────────
+    # Pagination
     total = len(sorted_data)
     total_pages = max(1, (total + PAGE_SIZE - 1) // PAGE_SIZE)
-    # Clamp page index in case filters reduced result count
-    if st.session_state["page"] >= total_pages:
-        st.session_state["page"] = total_pages - 1
+    if st.session_state.page >= total_pages:
+        st.session_state.page = 0
+    page_start = st.session_state.page * PAGE_SIZE
+    page_data = sorted_data[page_start:page_start + PAGE_SIZE]
 
-    st.markdown('<h2 class="section-title">Ranked Candidates</h2>', unsafe_allow_html=True)
+    pg_l, pg_c, pg_r = st.columns([1, 3, 1])
+    with pg_l:
+        if st.button("◀ Prev", disabled=(st.session_state.page == 0)):
+            st.session_state.page -= 1; st.rerun()
+    with pg_c:
+        st.markdown(
+            f"<p style='text-align:center;color:#B8C0CC;margin:6px 0;'>"
+            f"Page {st.session_state.page + 1} of {total_pages} &nbsp;·&nbsp; {total} results</p>",
+            unsafe_allow_html=True)
+    with pg_r:
+        if st.button("Next ▶", disabled=(st.session_state.page >= total_pages - 1)):
+            st.session_state.page += 1; st.rerun()
 
-    nav_l, nav_c, nav_r = st.columns([1, 3, 1])
-    with nav_l:
-        if st.button("◀ Prev", disabled=(st.session_state["page"] == 0)):
-            st.session_state["page"] -= 1
-            st.rerun()
-    with nav_c:
-        page_pick = st.selectbox(
-            "Page", range(1, total_pages + 1),
-            index=st.session_state["page"],
-            key="_page_top",
-            label_visibility="collapsed",
-        )
-        if page_pick - 1 != st.session_state["page"]:
-            st.session_state["page"] = page_pick - 1
-            st.rerun()
-    with nav_r:
-        if st.button("Next ▶", disabled=(st.session_state["page"] >= total_pages - 1)):
-            st.session_state["page"] += 1
-            st.rerun()
+    st.markdown(f"<p class='secondary-text'>Showing {page_start + 1}–{min(page_start + PAGE_SIZE, total)} of {total} professors</p>", unsafe_allow_html=True)
 
-    page_start = st.session_state["page"] * PAGE_SIZE
-    page_end = min(page_start + PAGE_SIZE, total)
-    page_data = sorted_data[page_start:page_end]
-
-    st.markdown(
-        f"<p class='secondary-text'>Showing {page_start + 1}–{page_end} of {total} professors "
-        f"(filtered from {len(data)} total) · Page {st.session_state['page'] + 1} of {total_pages}</p>",
-        unsafe_allow_html=True,
-    )
-
-    # ── Professor cards (one consolidated markdown block per card) ────────────
     for i, d in enumerate(page_data):
         sc = d.get("scores", {})
-        tier = sc.get("tier") or "MISSING"
+        tier = sc.get("tier", "UNRELATED")
         llm = sc.get("llm", {})
         standing_raw = sc.get("standing")
         stand = standing_raw if isinstance(standing_raw, dict) else {}
-        fit_score = llm.get("overall_fit", 0) or 0
+        fit_score = llm.get("overall_fit", 0)
 
-        card_class = {
-            "DIRECT": "card-positive",
-            "ADJACENT": "card-neutral",
-            "EXCLUDED": "card-critical",
-            "MISSING": "card-warning",
-        }.get(tier, "card-warning")
+        # Determine card type based on fit score and tier
+        if tier == "DIRECT":
+            card_class = "card-positive"
+        elif tier == "ADJACENT":
+            card_class = "card-neutral"
+        elif tier == "EXCLUDED":
+            card_class = "card-critical"
+        else:
+            card_class = "card-warning"
 
-        # Safe-escape text fields to prevent raw HTML leaking into the card
-        prof_name = str(d.get("name", "Unknown")).replace("<", "&lt;").replace(">", "&gt;")
-        designation = str(d.get("designation", "")).replace("<", "&lt;").replace(">", "&gt;")
-        verdict_raw = (llm.get("verdict") or "—")[:120]
-        verdict_text = str(verdict_raw).replace("<", "&lt;").replace(">", "&gt;")
-
-        # Top-theme chips
-        best = [b for b in (llm.get("best_subthemes") or []) if b.get("score", 0) >= 40][:3]
-        chips_html = ""
-        if best:
-            chips = " ".join(
-                f'<span class="chip">{b.get("id","?")} ({b.get("score","?")} / 100)</span>'
-                for b in best
-            )
-            chips_html = f'<div style="margin-bottom:12px;">{chips}</div>'
-
-        # Agency signal chips
-        sig = (d.get("web_signals", {}) or {}).get("signals", {}) or {}
-        agency_html = ""
-        if sig:
-            agency_chips = " ".join(
-                f'<span class="chip" style="background:rgba(34,197,94,0.15);color:#22C55E;border-color:rgba(34,197,94,0.3);">'
-                f'{k.replace("_"," ")}</span>'
-                for k in list(sig)[:4]
-            )
-            agency_html = f'<div style="margin-bottom:12px;">{agency_chips}</div>'
-
-        # Metrics row built entirely in HTML (no st.columns inside the card)
-        h_idx = stand.get("h_index", "N/A")
-        citations = stand.get("citations", "N/A")
-        impact = impact_standing(stand.get("seniority"), stand.get("h_index"))
-        metrics_html = f"""
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
-            {metric_card(fit_score, "RFP Fit", True)}
-            {metric_card(h_idx, "H-Index")}
-            {metric_card(citations, "Citations")}
-            {metric_card(impact, "Impact")}
-        </div>"""
-
-        # Render the entire card in one markdown call — no orphan closing tags
         st.markdown(f"""
         <div class="card {card_class}">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div style="flex:1;">
-                    <h3 style="color:#F5F7FA;margin-bottom:8px;">
-                        {prof_name} · {designation} {badge(tier)}
-                    </h3>
-                    <p style="color:#B8C0CC;font-style:italic;margin-bottom:16px;">{verdict_text}...</p>
-                    {chips_html}
-                    {agency_html}
-                </div>
-            </div>
-            {metrics_html}
-        </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div style="flex: 1;">
+                    <h3 style="color: #F5F7FA; margin-bottom: 8px;">{d.get('name','?')} · {d.get('designation','')} {badge(tier)}</h3>
+                    <p style="color: #B8C0CC; font-style: italic; margin-bottom: 16px;">{llm.get('verdict','—')[:120]}...</p>
+
         """, unsafe_allow_html=True)
 
-        global_idx = page_start + i
-        if st.button("View Full Profile →", key=f"o{global_idx}"):
-            st.session_state.sel_data = d
-            st.rerun()
+        # Show top themes as chips
+        best = [b for b in (llm.get("best_subthemes") or []) if b.get("score", 0) >= 40][:3]
+        if best:
+            chips = " ".join([f'<span class="chip">{b["id"]} ({b.get("score","?")}/100)</span>' for b in best])
+            st.markdown(f'<div style="margin-bottom: 12px;">{chips}</div>', unsafe_allow_html=True)
 
-    # ── Pagination controls (bottom) ──────────────────────────────────────────
+        # Agency signals
+        sig = (d.get("web_signals", {}) or {}).get("signals", {}) or {}
+        if sig:
+            agency_chips = " ".join([f'<span class="chip" style="background: rgba(34,197,94,0.15); color: #22C55E; border-color: rgba(34,197,94,0.3);">{k.replace("_"," ")}</span>' for k in list(sig)[:4]])
+            st.markdown(f'<div>{agency_chips}</div>', unsafe_allow_html=True)
+
+        # Metrics row - render each card properly
+        st.markdown('<div class="metrics-row" style="margin-top: 16px;">', unsafe_allow_html=True)
+
+        # Create columns for proper layout
+        metric_cols = st.columns(4)
+
+        with metric_cols[0]:
+            st.markdown(metric_card(fit_score, "RFP Fit", True), unsafe_allow_html=True)
+        with metric_cols[1]:
+            st.markdown(metric_card(stand.get("h_index", "N/A"), "H-Index"), unsafe_allow_html=True)
+        with metric_cols[2]:
+            st.markdown(metric_card(stand.get("citations", "N/A"), "Citations"), unsafe_allow_html=True)
+        with metric_cols[3]:
+            st.markdown(metric_card(impact_standing(stand.get("seniority"), stand.get("h_index")), "Impact"), unsafe_allow_html=True)
+
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div></div></div>', unsafe_allow_html=True)
+
+        if st.button(f"View Full Profile →", key=f"o{page_start + i}"):
+            st.session_state.sel_data = d; st.rerun()
+
+    # Bottom pagination
     st.markdown("---")
     bot_l, bot_c, bot_r = st.columns([1, 3, 1])
     with bot_l:
-        if st.button("◀ Prev", key="prev_bot", disabled=(st.session_state["page"] == 0)):
-            st.session_state["page"] -= 1
-            st.rerun()
+        if st.button("◀ Prev", key="prev_bot", disabled=(st.session_state.page == 0)):
+            st.session_state.page -= 1; st.rerun()
     with bot_c:
-        page_pick_bot = st.selectbox(
-            "Page", range(1, total_pages + 1),
-            index=st.session_state["page"],
-            key="_page_bot",
-            label_visibility="collapsed",
-        )
-        if page_pick_bot - 1 != st.session_state["page"]:
-            st.session_state["page"] = page_pick_bot - 1
-            st.rerun()
+        st.markdown(
+            f"<p style='text-align:center;color:#B8C0CC;margin:6px 0;'>"
+            f"Page {st.session_state.page + 1} of {total_pages}</p>",
+            unsafe_allow_html=True)
     with bot_r:
-        if st.button("Next ▶", key="next_bot", disabled=(st.session_state["page"] >= total_pages - 1)):
-            st.session_state["page"] += 1
-            st.rerun()
-    st.markdown(
-        f"<p class='secondary-text' style='text-align:center;'>Page {st.session_state['page'] + 1} of {total_pages}</p>",
-        unsafe_allow_html=True,
-    )
+        if st.button("Next ▶", key="next_bot", disabled=(st.session_state.page >= total_pages - 1)):
+            st.session_state.page += 1; st.rerun()
 
 
 # ============================== DETAIL ==============================
@@ -953,33 +904,37 @@ def detail(prof_data):
         # Angle scores in a card
         ang = llm.get("angles", {}) or {}
         if ang:
+            st.markdown(f"""
+            <div class="card card-neutral">
+                <h4>📊 Fit Assessment Angles</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
+            """, unsafe_allow_html=True)
+
             angle_labels = {
                 "recent_direct": "Recent Direct Work",
                 "transferable_methods": "Transferable Methods",
                 "interest_alignment": "Interest Alignment",
-                "trajectory": "Research Trajectory",
+                "trajectory": "Research Trajectory"
             }
-            angle_cells = ""
+
             for k, v in ang.items():
                 label = angle_labels.get(k, k.replace("_", " ").title())
                 color = "#22C55E" if v >= 60 else "#3B82F6" if v >= 30 else "#F59E0B"
-                angle_cells += f"""
-                <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:6px;">
-                    <div style="font-size:11px;color:#B8C0CC;text-transform:uppercase;">{label}</div>
-                    <div style="font-size:16px;font-weight:600;color:{color};">{v}/100</div>
-                    <div style="background:rgba(255,255,255,0.1);height:4px;border-radius:2px;margin-top:4px;">
-                        <div style="width:{v}%;height:100%;background:{color};border-radius:2px;"></div>
+                st.markdown(f"""
+                    <div style="padding: 8px; background: rgba(255,255,255,0.02); border-radius: 6px;">
+                        <div style="font-size: 11px; color: #B8C0CC; text-transform: uppercase;">{label}</div>
+                        <div style="font-size: 16px; font-weight: 600; color: {color};">{v}/100</div>
+                        <div style="background: rgba(255,255,255,0.1); height: 4px; border-radius: 2px; margin-top: 4px;">
+                            <div style="width: {v}%; height: 100%; background: {color}; border-radius: 2px;"></div>
+                        </div>
                     </div>
-                </div>"""
-            st.markdown(f"""
-            <div class="card card-neutral">
-                <h4>📊 Fit Assessment Angles</h4>
-                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px;">
-                    {angle_cells}
+                """, unsafe_allow_html=True)
+
+            st.markdown("""
                 </div>
                 <div class="muted-text">
-                    <strong>Methodology:</strong> Each angle assessed independently (0-100) based on
-                    publication analysis, stated interests, and research trajectory over past 5 years.
+                    <strong>Methodology:</strong> Each angle assessed independently (0-100) based on publication analysis,
+                    stated interests, and research trajectory over past 5 years.
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -1007,44 +962,54 @@ def detail(prof_data):
         # Research Proposal Alignment Scores with clear explanations
         best_subthemes = (llm.get("best_subthemes") or [])[:5]
         if best_subthemes:
-            subtheme_rows = ""
-            for b in best_subthemes:
-                sid = b.get("id", "?")
-                s = b.get("score", 0)
-                st_title = ST_TITLE.get(sid, "Unknown category")
-                recency = b.get("recency", "?")
-                angle = b.get("angle", "")
-                evidence = b.get("evidence", "No evidence cited")
-                col = "#22C55E" if s >= 65 else "#3B82F6" if s >= 40 else "#8A8F98"
-                level = "Direct Fit" if s >= 65 else "Adjacent" if s >= 40 else "Limited"
-                ev_text = evidence[:200] + ("..." if len(evidence) > 200 else "")
-                subtheme_rows += f"""
-                <div style="margin-bottom:16px;padding:12px;border-left:3px solid {col};background:rgba(255,255,255,0.02);">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                        <div>
-                            <strong style="color:#F5F7FA;">Proposal {sid}: {st_title}</strong>
-                            <span class="badge" style="background:{col};margin-left:8px;">{level}</span>
-                        </div>
-                        <div style="font-size:18px;font-weight:bold;color:{col};">{s}/100</div>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.1);height:6px;border-radius:3px;margin-bottom:8px;">
-                        <div style="width:{int(s)}%;height:100%;background:{col};border-radius:3px;"></div>
-                    </div>
-                    <div class="muted-text">
-                        <strong>Timeline:</strong> {recency} | <strong>Approach:</strong> {angle}<br>
-                        <strong>Evidence:</strong> {ev_text}
-                    </div>
-                </div>"""
-            st.markdown(f"""
+            st.markdown("""
             <div class="card card-neutral">
                 <h4>📋 Research Proposal Alignment Analysis</h4>
-                <div class="muted-text" style="margin-bottom:16px;">
+                <div class="muted-text" style="margin-bottom: 16px;">
                     <strong>Legend:</strong> Subtheme ID refers to research proposal categories in the Schmidt Sciences agenda.
                     Scores reflect evidence strength (0-100): 65+ = Direct fit, 40-64 = Adjacent relevance, &lt;40 = Limited connection
                 </div>
-                {subtheme_rows}
-            </div>
             """, unsafe_allow_html=True)
+
+            for b in best_subthemes:
+                sid = b.get("id", "?")
+                s = b.get("score", 0)
+                title = ST_TITLE.get(sid, "Unknown category")
+                recency = b.get("recency", "?")
+                angle = b.get("angle", "")
+                evidence = b.get("evidence", "No evidence cited")
+
+                # Color coding for score levels
+                if s >= 65:
+                    col = "#22C55E"
+                    level = "Direct Fit"
+                elif s >= 40:
+                    col = "#3B82F6"
+                    level = "Adjacent"
+                else:
+                    col = "#8A8F98"
+                    level = "Limited"
+
+                st.markdown(f"""
+                <div style="margin-bottom: 16px; padding: 12px; border-left: 3px solid {col}; background: rgba(255,255,255,0.02);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div>
+                            <strong style="color: #F5F7FA;">Proposal {sid}: {title}</strong>
+                            <span class="badge" style="background: {col}; margin-left: 8px;">{level}</span>
+                        </div>
+                        <div style="font-size: 18px; font-weight: bold; color: {col};">{s}/100</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; margin-bottom: 8px;">
+                        <div style="width: {int(s)}%; height: 100%; background: {col}; border-radius: 3px;"></div>
+                    </div>
+                    <div class="muted-text">
+                        <strong>Timeline:</strong> {recency} | <strong>Approach:</strong> {angle}<br>
+                        <strong>Evidence:</strong> {evidence[:200]}{'...' if len(evidence) > 200 else ''}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("</div>", unsafe_allow_html=True)
         if tier == "EXCLUDED" and llm.get("out_of_scope", {}).get("flag"):
             st.error(f"Out of scope — {llm['out_of_scope'].get('area','')}: {llm['out_of_scope'].get('reason','')}")
 
@@ -1052,6 +1017,12 @@ def detail(prof_data):
         strengths = llm.get("strengths") or []; gaps = llm.get("gaps") or []; stops = llm.get("deal_breakers") or []
 
         if strengths or gaps or stops:
+            st.markdown("""
+            <div class="card card-neutral">
+                <h4>🎯 Decision Matrix</h4>
+            """, unsafe_allow_html=True)
+
+            # Generate final recommendation based on evidence analysis
             total_evidence = len(strengths)
             total_gaps = len(gaps)
             total_stops = len(stops)
@@ -1073,51 +1044,59 @@ def detail(prof_data):
                 rec_color = "#EF4444"
                 rec_reason = f"Insufficient evidence ({total_evidence} strengths, {total_gaps} gaps)"
 
-            strengths_html = ""
-            if strengths:
-                strengths_html = f"""
-                <div style="margin-bottom:16px;">
-                    <h5 style="color:#22C55E;margin-bottom:8px;">✅ Strongest Evidence ({total_evidence} factors)</h5>
-                    {format_bullet_list(strengths, "positive")}
-                    <div style="color:#B8C0CC;font-size:11px;margin-top:8px;">These factors strongly support funding consideration</div>
-                </div>"""
-            gaps_html = ""
-            if gaps:
-                gaps_html = f"""
-                <div style="margin-bottom:16px;">
-                    <h5 style="color:#F59E0B;margin-bottom:8px;">⚠️ Gaps / Debatable ({total_gaps} factors)</h5>
-                    {format_bullet_list(gaps, "warning")}
-                    <div style="color:#B8C0CC;font-size:11px;margin-top:8px;">These areas need additional consideration or may limit application strength</div>
-                </div>"""
-            stops_html = ""
-            if stops:
-                stops_html = f"""
-                <div style="margin-bottom:16px;">
-                    <h5 style="color:#EF4444;margin-bottom:8px;">🚫 Deal-breakers ({total_stops} factors)</h5>
-                    {format_bullet_list(stops, "critical")}
-                    <div style="color:#B8C0CC;font-size:11px;margin-top:8px;">These factors prevent funding recommendation under current RFP criteria</div>
-                </div>"""
-
+            # Final Recommendation Box
             st.markdown(f"""
-            <div class="card card-neutral">
-                <h4>🎯 Decision Matrix</h4>
-                <div style="background:linear-gradient(135deg,{rec_color}15,{rec_color}08);border:1px solid {rec_color}40;border-radius:8px;padding:16px;margin-bottom:16px;">
-                    <div style="display:flex;align-items:center;margin-bottom:8px;">
-                        <h4 style="color:{rec_color};margin:0;margin-right:12px;">{recommendation}</h4>
-                        <span style="background:{rec_color};color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">
-                            FIT SCORE: {fit_score}/100
-                        </span>
-                    </div>
-                    <div style="color:#F5F7FA;margin-bottom:8px;">{rec_reason}</div>
-                    <div style="color:#B8C0CC;font-size:12px;">
-                        Analysis based on {total_evidence + total_gaps + total_stops} decision factors from LLM assessment
-                    </div>
+            <div style="background: linear-gradient(135deg, {rec_color}15, {rec_color}08); border: 1px solid {rec_color}40; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <h4 style="color: {rec_color}; margin: 0; margin-right: 12px;">{recommendation}</h4>
+                    <span style="background: {rec_color}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
+                        FIT SCORE: {fit_score}/100
+                    </span>
                 </div>
-                {strengths_html}
-                {gaps_html}
-                {stops_html}
+                <div style="color: #F5F7FA; margin-bottom: 8px;">{rec_reason}</div>
+                <div style="color: #B8C0CC; font-size: 12px;">
+                    Analysis based on {total_evidence + total_gaps + total_stops} decision factors from LLM assessment
+                </div>
             </div>
             """, unsafe_allow_html=True)
+
+            if strengths:
+                strength_items = format_bullet_list(strengths, "positive")
+                st.markdown(f"""
+                <div style="margin-bottom: 16px;">
+                    <h5 style="color: #22C55E; margin-bottom: 8px;">✅ Strongest Evidence ({len(strengths)} factors)</h5>
+                    {strength_items}
+                    <div style="color: #B8C0CC; font-size: 11px; margin-top: 8px;">
+                        These factors strongly support funding consideration
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            if gaps:
+                gap_items = format_bullet_list(gaps, "warning")
+                st.markdown(f"""
+                <div style="margin-bottom: 16px;">
+                    <h5 style="color: #F59E0B; margin-bottom: 8px;">⚠️ Gaps / Debatable ({len(gaps)} factors)</h5>
+                    {gap_items}
+                    <div style="color: #B8C0CC; font-size: 11px; margin-top: 8px;">
+                        These areas need additional consideration or may limit application strength
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            if stops:
+                stop_items = format_bullet_list(stops, "critical")
+                st.markdown(f"""
+                <div style="margin-bottom: 16px;">
+                    <h5 style="color: #EF4444; margin-bottom: 8px;">🚫 Deal-breakers ({len(stops)} factors)</h5>
+                    {stop_items}
+                    <div style="color: #B8C0CC; font-size: 11px; margin-top: 8px;">
+                        These factors prevent funding recommendation under current RFP criteria
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("#### Research focus")
         fo = d.get("focus", {})
@@ -1126,7 +1105,7 @@ def detail(prof_data):
         st.markdown(f"""
         <div class="card card-neutral">
             <h4>Overall (career)</h4>
-            <p>{fo.get('overall') or '—'}</p>
+            <p>{fo.get('overall','—')}</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1134,38 +1113,41 @@ def detail(prof_data):
         st.markdown(f"""
         <div class="card card-neutral">
             <h4>Recent (last 5y)</h4>
-            <p>{fo.get('recent') or '—'}</p>
-            <div class="muted-text">source: {fo.get('source') or '—'}</div>
+            <p>{fo.get('recent','—')}</p>
+            <div class="muted-text">source: {fo.get('source','—')}</div>
         </div>
         """, unsafe_allow_html=True)
 
         # Top contributions section
         top_papers = (ac.get("top_cited") or [])[:config.TOP_PAPERS_SHOW]
         if top_papers:
-            paper_rows = ""
+            st.markdown("""
+            <div class="card card-neutral">
+                <h4>📄 Top Contributions</h4>
+            """, unsafe_allow_html=True)
             for w in top_papers:
-                wtitle = str(w.get("title", "Title not available")).replace("<", "&lt;").replace(">", "&gt;")
-                year = w.get("year", "N/A")
-                citations = w.get("cited_by", 0)
+                title = w.get("title", "Title not available")
+                year = w.get('year', 'N/A')
+                citations = w.get('cited_by', 0)
                 venue = w.get("venue", "")
                 url = w.get("url", "")
+
                 meta = f"{year}, {citations} citations"
                 if venue:
                     meta += f", {venue}"
-                link_html = ""
-                if url and url.startswith(("http://", "https://")):
-                    link_html = f' <a href="{url}" target="_blank" style="color:#3B82F6;">[view]</a>'
-                paper_rows += f"""
-                <div style="margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1);">
-                    <div style="font-weight:500;color:#F5F7FA;margin-bottom:4px;">{wtitle}</div>
-                    <div style="color:#B8C0CC;font-size:13px;">{meta}{link_html}</div>
-                </div>"""
-            st.markdown(f"""
-            <div class="card card-neutral">
-                <h4>📄 Top Contributions</h4>
-                {paper_rows}
-            </div>
-            """, unsafe_allow_html=True)
+
+                # Only include link if URL exists and looks valid
+                valid_link = ""
+                if url and url.startswith(('http://', 'https://')):
+                    valid_link = f' <a href="{url}" target="_blank" style="color: #3B82F6;">[view]</a>'
+
+                st.markdown(f"""
+                <div style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <div style="font-weight: 500; color: #F5F7FA; margin-bottom: 4px;">{title}</div>
+                    <div style="color: #B8C0CC; font-size: 13px;">{meta}{valid_link}</div>
+                </div>
+                """, unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
         else:
             st.markdown("""
             <div class="card card-neutral">
