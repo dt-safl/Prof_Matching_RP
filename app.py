@@ -903,6 +903,8 @@ def detail(prof_data):
 
         # Angle scores in a card
         ang = llm.get("angles", {}) or {}
+        if not isinstance(ang, dict):
+            ang = {}
         if ang:
             st.markdown(f"""
             <div class="card card-neutral">
