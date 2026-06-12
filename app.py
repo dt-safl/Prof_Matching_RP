@@ -20,6 +20,7 @@ TIER = {
     "ADJACENT":  ("#2f6fb0", "Adjacent",     "Transferable methods/topics applicable to the agenda."),
     "UNRELATED": ("#8a8f98", "Unrelated",    "Capable researcher, but work doesn't address the agenda."),
     "EXCLUDED":  ("#b3382f", "Out of scope", "Core area is explicitly excluded by this RFP (e.g. interpretability)."),
+    "MISSING":   ("#6b7280", "Incomplete",   "Scoring pipeline did not complete for this profile."),
 }
 ST_TITLE = {t["id"]: t["title"] for t in SUBTHEMES}
 
@@ -235,6 +236,7 @@ st.markdown("""
  .badge.adjacent { background: #3B82F6; color: white; }
  .badge.unrelated { background: #F59E0B; color: white; }
  .badge.excluded { background: #EF4444; color: white; }
+ .badge.missing { background: #6B7280; color: white; }
 
  .chip {
    display: inline-block;
@@ -303,16 +305,14 @@ st.markdown("""
 
 
 @st.cache_data
+def _load_cached(mtime: float):
+    """Cache keyed by file mtime so data auto-refreshes when the JSON is updated."""
+    return json.load(open(config.OUT_JSON))
+
 def load():
     if not os.path.exists(config.OUT_JSON):
         return []
-    # Include file modification time in cache key to auto-invalidate when data updates
-    file_mtime = os.path.getmtime(config.OUT_JSON)
-    return _load_data_with_mtime(file_mtime)
-
-def _load_data_with_mtime(mtime):
-    """Helper function that includes file modification time for proper cache invalidation."""
-    return json.load(open(config.OUT_JSON))
+    return _load_cached(os.path.getmtime(config.OUT_JSON))
 
 
 def badge(t):
@@ -320,10 +320,11 @@ def badge(t):
         "DIRECT": "direct",
         "ADJACENT": "adjacent",
         "UNRELATED": "unrelated",
-        "EXCLUDED": "excluded"
+        "EXCLUDED": "excluded",
+        "MISSING": "missing",
     }
     _, lbl, _ = TIER.get(t, ("", t, ""))
-    css_class = tier_classes.get(t, "unrelated")
+    css_class = tier_classes.get(t, "missing")
     return f'<span class="badge {css_class}">{lbl}</span>'
 
 def impact_standing(seniority, h_index=None):
@@ -475,6 +476,8 @@ talks / network). This answers "how strong are they, and *for what*", independen
 
 
 # ============================== HOME ==============================
+PAGE_SIZE = 20
+
 def home():
     st.markdown('<h1 class="main-title">Researcher → Proposal Match</h1>', unsafe_allow_html=True)
     st.markdown('<p class="secondary-text">Schmidt Sciences · Science of Trustworthy AI (2026) — evidence-based fit analysis</p>', unsafe_allow_html=True)
@@ -485,114 +488,109 @@ def home():
 
     rubric_expander()
 
-    # Summary stats with better styling
-    tiers = [d.get("scores", {}).get("tier", "UNRELATED") for d in data if "scores" in d]
+    # ── Build institutions list once ──────────────────────────────────────────
+    all_institutions = sorted(set(d.get("institute", "Unknown") for d in data if d.get("institute")))
+    sort_options = {
+        "Overall Fit (High to Low)": ("overall_fit", True),
+        "Overall Fit (Low to High)": ("overall_fit", False),
+        "H-Index (High to Low)": ("h_index", True),
+        "H-Index (Low to High)": ("h_index", False),
+        "Theme 1.1 Score": ("1.1", True),
+        "Theme 1.2 Score": ("1.2", True),
+        "Theme 1.3 Score": ("1.3", True),
+        "Theme 2.1 Score": ("2.1", True),
+        "Theme 2.2 Score": ("2.2", True),
+        "Theme 3.1 Score": ("3.1", True),
+        "Theme 3.2 Score": ("3.2", True),
+        "Institute Name": ("institute", False),
+        "Professor Name": ("name", False),
+    }
 
-    st.markdown('<h2 class="section-title">Portfolio Overview</h2>', unsafe_allow_html=True)
-    cols = st.columns(4)
-    for col, t in zip(cols, ["DIRECT", "ADJACENT", "UNRELATED", "EXCLUDED"]):
-        count = tiers.count(t)
-        col.markdown(f"""
-        <div class="card card-neutral" style="text-align: center; padding: 16px;">
-            {badge(t)}<br>
-            <div class="metric-value" style="font-size: 24px; margin: 8px 0;">{count}</div>
-            <div class="muted-text" style="font-size: 11px;">{TIER[t][2][:40]}...</div>
-        </div>
-        """, unsafe_allow_html=True)
+    # ── Session-state defaults (only set once; preserved across reruns) ───────
+    if "f_show" not in st.session_state:
+        st.session_state["f_show"] = list(TIER)
+    if "f_institutions" not in st.session_state:
+        st.session_state["f_institutions"] = all_institutions
+    if "f_sort" not in st.session_state:
+        st.session_state["f_sort"] = list(sort_options.keys())[0]
+    if "f_min_fit" not in st.session_state:
+        st.session_state["f_min_fit"] = 0
+    if "f_min_h" not in st.session_state:
+        st.session_state["f_min_h"] = 0
+    if "f_theme" not in st.session_state:
+        st.session_state["f_theme"] = "All Themes"
+    if "f_min_theme_score" not in st.session_state:
+        st.session_state["f_min_theme_score"] = 0
+    if "f_search" not in st.session_state:
+        st.session_state["f_search"] = ""
+    if "page" not in st.session_state:
+        st.session_state["page"] = 0
 
-    # Enhanced Filters and Sorting section
-    st.markdown('<h2 class="section-title">Filters & Sorting</h2>', unsafe_allow_html=True)
+    # ── Filters & Sorting section ─────────────────────────────────────────────
+    st.markdown('<h2 class="section-title">Filters &amp; Sorting</h2>', unsafe_allow_html=True)
 
     filter_col1, filter_col2, filter_col3 = st.columns([1, 1, 1])
 
     with filter_col1:
-        show = st.multiselect("Filter by tier", list(TIER), default=list(TIER), format_func=lambda t: TIER[t][1])
+        show = st.multiselect("Filter by tier", list(TIER), key="f_show", format_func=lambda t: TIER[t][1])
 
     with filter_col2:
-        # Get unique institutions from data
-        institutions = list(set(d.get("institute", "Unknown") for d in data if d.get("institute")))
-        institutions.sort()
-        show_institutions = st.multiselect("Filter by institution", institutions, default=institutions)
+        show_institutions = st.multiselect("Filter by institution", all_institutions, key="f_institutions")
 
     with filter_col3:
-        # Sorting options
-        sort_options = {
-            "Overall Fit (High to Low)": ("overall_fit", True),
-            "Overall Fit (Low to High)": ("overall_fit", False),
-            "H-Index (High to Low)": ("h_index", True),
-            "H-Index (Low to High)": ("h_index", False),
-            "Theme 1.1 Score": ("1.1", True),
-            "Theme 1.2 Score": ("1.2", True),
-            "Theme 1.3 Score": ("1.3", True),
-            "Theme 2.1 Score": ("2.1", True),
-            "Theme 2.2 Score": ("2.2", True),
-            "Theme 3.1 Score": ("3.1", True),
-            "Theme 3.2 Score": ("3.2", True),
-            "Institute Name": ("institute", False),
-            "Professor Name": ("name", False)
-        }
-
-        sort_by = st.selectbox("Sort by", list(sort_options.keys()), index=0)
+        sort_by = st.selectbox("Sort by", list(sort_options.keys()), key="f_sort")
         sort_key, sort_desc = sort_options[sort_by]
 
-    # Advanced filters
     adv_col1, adv_col2, adv_col3 = st.columns([1, 1, 1])
 
     with adv_col1:
-        min_fit = st.slider("Minimum Overall Fit Score", 0, 100, 0)
+        min_fit = st.slider("Minimum Overall Fit Score", 0, 100, key="f_min_fit")
 
     with adv_col2:
-        min_h_index = st.slider("Minimum H-Index", 0, 100, 0)
+        min_h_index = st.slider("Minimum H-Index", 0, 100, key="f_min_h")
 
     with adv_col3:
-        theme_filter = st.selectbox("Filter by Theme Score",
-                                  ["All Themes", "1.1 (AI Alignment)", "1.2 (Deception)", "1.3 (Power-Seeking)",
-                                   "2.1 (Evaluation)", "2.2 (Red Teaming)", "3.1 (Governance)", "3.2 (Multi-Agent)"])
-
+        theme_choices = ["All Themes", "1.1 (AI Alignment)", "1.2 (Deception)", "1.3 (Power-Seeking)",
+                         "2.1 (Evaluation)", "2.2 (Red Teaming)", "3.1 (Governance)", "3.2 (Multi-Agent)"]
+        theme_filter = st.selectbox("Filter by Theme Score", theme_choices, key="f_theme")
         if theme_filter != "All Themes":
-            theme_id = theme_filter.split()[0]
-            min_theme_score = st.slider(f"Minimum {theme_filter} Score", 0, 100, 0)
+            min_theme_score = st.slider(f"Minimum {theme_filter} Score", 0, 100, key="f_min_theme_score")
+        else:
+            min_theme_score = 0
 
-    # Text search and apply button
     search_col1, search_col2, search_col3 = st.columns([2, 1, 1])
 
     with search_col1:
-        search_text = st.text_input("🔍 Search by name, institute, or research interests", placeholder="e.g. machine learning, neural networks, IIT Delhi...")
+        search_text = st.text_input("🔍 Search by name, institute, or research interests",
+                                    placeholder="e.g. machine learning, neural networks, IIT Delhi...",
+                                    key="f_search")
 
     with search_col2:
-        apply_filters = st.button("🎯 Apply Filters", type="primary")
+        st.button("🎯 Apply Filters", type="primary")  # widgets already reactive; kept for UX
 
     with search_col3:
-        clear_filters = st.button("🗑️ Clear All")
+        if st.button("🗑️ Clear All"):
+            for k in ["f_show", "f_institutions", "f_sort", "f_min_fit", "f_min_h",
+                      "f_theme", "f_min_theme_score", "f_search", "page"]:
+                st.session_state.pop(k, None)
+            st.rerun()
 
-    # Handle clear filters
-    if clear_filters:
-        st.rerun()
-
-    st.markdown('<h2 class="section-title">Ranked Candidates</h2>', unsafe_allow_html=True)
-
-    # Apply filtering and sorting
+    # ── Apply filtering ────────────────────────────────────────────────────────
     filtered_data = []
     for d in data:
         sc = d.get("scores", {})
-        tier = sc.get("tier", "UNRELATED")
+        tier = sc.get("tier") or "MISSING"
         institute = d.get("institute", "Unknown")
         llm = sc.get("llm", {})
         standing_raw = sc.get("standing")
-        # Handle None, float, or other non-dict cases
-        if isinstance(standing_raw, dict):
-            standing = standing_raw
-        else:
-            standing = {}  # Default for None, float, or any other type
+        standing = standing_raw if isinstance(standing_raw, dict) else {}
 
-        # Apply basic filters
         if tier not in show:
             continue
         if institute not in show_institutions:
             continue
 
-        # Apply advanced filters
-        fit_score = llm.get("overall_fit", 0)
+        fit_score = llm.get("overall_fit", 0) or 0
         h_index = standing.get("h_index", 0) or 0
 
         if fit_score < min_fit:
@@ -600,40 +598,36 @@ def home():
         if h_index < min_h_index:
             continue
 
-        # Apply theme-specific filter
         if theme_filter != "All Themes":
             theme_id = theme_filter.split()[0]
-            themes = {theme.get("id"): theme.get("score", 0) for theme in llm.get("best_subthemes", [])}
-            theme_score = themes.get(theme_id, 0)
-            if theme_score < min_theme_score:
+            themes = {th.get("id"): th.get("score", 0) for th in (llm.get("best_subthemes") or [])}
+            if themes.get(theme_id, 0) < min_theme_score:
                 continue
 
-        # Apply text search filter
         if search_text:
             search_lower = search_text.lower()
-            searchable_text = " ".join([
+            searchable = " ".join([
                 d.get("name", "").lower(),
                 d.get("institute", "").lower(),
-                d.get("research_interests", "").lower(),
+                str(d.get("research_interests", "")).lower(),
                 d.get("designation", "").lower(),
-                llm.get("verdict", "").lower()
+                (llm.get("verdict") or "").lower(),
             ])
-            if search_lower not in searchable_text:
+            if search_lower not in searchable:
                 continue
 
         filtered_data.append(d)
 
-    # Sort the filtered data
+    # ── Sort ──────────────────────────────────────────────────────────────────
     def get_sort_value(prof):
         sc = prof.get("scores", {})
         if sort_key == "overall_fit":
-            return sc.get("llm", {}).get("overall_fit", 0)
+            return sc.get("llm", {}).get("overall_fit", 0) or 0
         elif sort_key == "h_index":
-            standing_raw = sc.get("standing")
-            standing = standing_raw if isinstance(standing_raw, dict) else {}
-            return standing.get("h_index", 0) or 0
+            sr = sc.get("standing")
+            return (sr if isinstance(sr, dict) else {}).get("h_index", 0) or 0
         elif sort_key in ["1.1", "1.2", "1.3", "2.1", "2.2", "3.1", "3.2"]:
-            themes = {theme.get("id"): theme.get("score", 0) for theme in sc.get("llm", {}).get("best_subthemes", [])}
+            themes = {th.get("id"): th.get("score", 0) for th in (sc.get("llm", {}).get("best_subthemes") or [])}
             return themes.get(sort_key, 0)
         elif sort_key == "institute":
             return prof.get("institute", "")
@@ -643,68 +637,161 @@ def home():
 
     sorted_data = sorted(filtered_data, key=get_sort_value, reverse=sort_desc)
 
-    # Display results count
-    st.markdown(f"<p class='secondary-text'>Showing {len(sorted_data)} of {len(data)} professors</p>", unsafe_allow_html=True)
+    # ── Portfolio Overview (based on current filter) ──────────────────────────
+    st.markdown('<h2 class="section-title">Portfolio Overview</h2>', unsafe_allow_html=True)
+    ov_tiers = [d.get("scores", {}).get("tier") or "MISSING" for d in sorted_data]
+    ov_cols = st.columns(5)
+    for col, t in zip(ov_cols, ["DIRECT", "ADJACENT", "UNRELATED", "EXCLUDED", "MISSING"]):
+        count = ov_tiers.count(t)
+        col.markdown(f"""
+        <div class="card card-neutral" style="text-align: center; padding: 16px;">
+            {badge(t)}<br>
+            <div class="metric-value" style="font-size: 24px; margin: 8px 0;">{count}</div>
+            <div class="muted-text" style="font-size: 11px;">{TIER[t][2][:40]}...</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    for i, d in enumerate(sorted_data):
+    # ── Pagination controls (top) ─────────────────────────────────────────────
+    total = len(sorted_data)
+    total_pages = max(1, (total + PAGE_SIZE - 1) // PAGE_SIZE)
+    # Clamp page index in case filters reduced result count
+    if st.session_state["page"] >= total_pages:
+        st.session_state["page"] = total_pages - 1
+
+    st.markdown('<h2 class="section-title">Ranked Candidates</h2>', unsafe_allow_html=True)
+
+    nav_l, nav_c, nav_r = st.columns([1, 3, 1])
+    with nav_l:
+        if st.button("◀ Prev", disabled=(st.session_state["page"] == 0)):
+            st.session_state["page"] -= 1
+            st.rerun()
+    with nav_c:
+        page_pick = st.selectbox(
+            "Page", range(1, total_pages + 1),
+            index=st.session_state["page"],
+            key="_page_top",
+            label_visibility="collapsed",
+        )
+        if page_pick - 1 != st.session_state["page"]:
+            st.session_state["page"] = page_pick - 1
+            st.rerun()
+    with nav_r:
+        if st.button("Next ▶", disabled=(st.session_state["page"] >= total_pages - 1)):
+            st.session_state["page"] += 1
+            st.rerun()
+
+    page_start = st.session_state["page"] * PAGE_SIZE
+    page_end = min(page_start + PAGE_SIZE, total)
+    page_data = sorted_data[page_start:page_end]
+
+    st.markdown(
+        f"<p class='secondary-text'>Showing {page_start + 1}–{page_end} of {total} professors "
+        f"(filtered from {len(data)} total) · Page {st.session_state['page'] + 1} of {total_pages}</p>",
+        unsafe_allow_html=True,
+    )
+
+    # ── Professor cards (one consolidated markdown block per card) ────────────
+    for i, d in enumerate(page_data):
         sc = d.get("scores", {})
-        tier = sc.get("tier", "UNRELATED")
+        tier = sc.get("tier") or "MISSING"
         llm = sc.get("llm", {})
         standing_raw = sc.get("standing")
         stand = standing_raw if isinstance(standing_raw, dict) else {}
-        fit_score = llm.get("overall_fit", 0)
+        fit_score = llm.get("overall_fit", 0) or 0
 
-        # Determine card type based on fit score and tier
-        if tier == "DIRECT":
-            card_class = "card-positive"
-        elif tier == "ADJACENT":
-            card_class = "card-neutral"
-        elif tier == "EXCLUDED":
-            card_class = "card-critical"
-        else:
-            card_class = "card-warning"
+        card_class = {
+            "DIRECT": "card-positive",
+            "ADJACENT": "card-neutral",
+            "EXCLUDED": "card-critical",
+            "MISSING": "card-warning",
+        }.get(tier, "card-warning")
 
+        # Safe-escape text fields to prevent raw HTML leaking into the card
+        prof_name = str(d.get("name", "Unknown")).replace("<", "&lt;").replace(">", "&gt;")
+        designation = str(d.get("designation", "")).replace("<", "&lt;").replace(">", "&gt;")
+        verdict_raw = (llm.get("verdict") or "—")[:120]
+        verdict_text = str(verdict_raw).replace("<", "&lt;").replace(">", "&gt;")
+
+        # Top-theme chips
+        best = [b for b in (llm.get("best_subthemes") or []) if b.get("score", 0) >= 40][:3]
+        chips_html = ""
+        if best:
+            chips = " ".join(
+                f'<span class="chip">{b.get("id","?")} ({b.get("score","?")} / 100)</span>'
+                for b in best
+            )
+            chips_html = f'<div style="margin-bottom:12px;">{chips}</div>'
+
+        # Agency signal chips
+        sig = (d.get("web_signals", {}) or {}).get("signals", {}) or {}
+        agency_html = ""
+        if sig:
+            agency_chips = " ".join(
+                f'<span class="chip" style="background:rgba(34,197,94,0.15);color:#22C55E;border-color:rgba(34,197,94,0.3);">'
+                f'{k.replace("_"," ")}</span>'
+                for k in list(sig)[:4]
+            )
+            agency_html = f'<div style="margin-bottom:12px;">{agency_chips}</div>'
+
+        # Metrics row built entirely in HTML (no st.columns inside the card)
+        h_idx = stand.get("h_index", "N/A")
+        citations = stand.get("citations", "N/A")
+        impact = impact_standing(stand.get("seniority"), stand.get("h_index"))
+        metrics_html = f"""
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
+            {metric_card(fit_score, "RFP Fit", True)}
+            {metric_card(h_idx, "H-Index")}
+            {metric_card(citations, "Citations")}
+            {metric_card(impact, "Impact")}
+        </div>"""
+
+        # Render the entire card in one markdown call — no orphan closing tags
         st.markdown(f"""
         <div class="card {card_class}">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div style="flex: 1;">
-                    <h3 style="color: #F5F7FA; margin-bottom: 8px;">{d.get('name','?')} · {d.get('designation','')} {badge(tier)}</h3>
-                    <p style="color: #B8C0CC; font-style: italic; margin-bottom: 16px;">{llm.get('verdict','—')[:120]}...</p>
-
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div style="flex:1;">
+                    <h3 style="color:#F5F7FA;margin-bottom:8px;">
+                        {prof_name} · {designation} {badge(tier)}
+                    </h3>
+                    <p style="color:#B8C0CC;font-style:italic;margin-bottom:16px;">{verdict_text}...</p>
+                    {chips_html}
+                    {agency_html}
+                </div>
+            </div>
+            {metrics_html}
+        </div>
         """, unsafe_allow_html=True)
 
-        # Show top themes as chips
-        best = [b for b in (llm.get("best_subthemes") or []) if b.get("score", 0) >= 40][:3]
-        if best:
-            chips = " ".join([f'<span class="chip">{b["id"]} ({b.get("score","?")}/100)</span>' for b in best])
-            st.markdown(f'<div style="margin-bottom: 12px;">{chips}</div>', unsafe_allow_html=True)
+        global_idx = page_start + i
+        if st.button("View Full Profile →", key=f"o{global_idx}"):
+            st.session_state.sel_data = d
+            st.rerun()
 
-        # Agency signals
-        sig = (d.get("web_signals", {}) or {}).get("signals", {}) or {}
-        if sig:
-            agency_chips = " ".join([f'<span class="chip" style="background: rgba(34,197,94,0.15); color: #22C55E; border-color: rgba(34,197,94,0.3);">{k.replace("_"," ")}</span>' for k in list(sig)[:4]])
-            st.markdown(f'<div>{agency_chips}</div>', unsafe_allow_html=True)
-
-        # Metrics row - render each card properly
-        st.markdown('<div class="metrics-row" style="margin-top: 16px;">', unsafe_allow_html=True)
-
-        # Create columns for proper layout
-        metric_cols = st.columns(4)
-
-        with metric_cols[0]:
-            st.markdown(metric_card(fit_score, "RFP Fit", True), unsafe_allow_html=True)
-        with metric_cols[1]:
-            st.markdown(metric_card(stand.get("h_index", "N/A"), "H-Index"), unsafe_allow_html=True)
-        with metric_cols[2]:
-            st.markdown(metric_card(stand.get("citations", "N/A"), "Citations"), unsafe_allow_html=True)
-        with metric_cols[3]:
-            st.markdown(metric_card(impact_standing(stand.get("seniority"), stand.get("h_index")), "Impact"), unsafe_allow_html=True)
-
-        st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('</div></div></div>', unsafe_allow_html=True)
-
-        if st.button(f"View Full Profile →", key=f"o{i}"):
-            st.session_state.sel_data = d; st.rerun()
+    # ── Pagination controls (bottom) ──────────────────────────────────────────
+    st.markdown("---")
+    bot_l, bot_c, bot_r = st.columns([1, 3, 1])
+    with bot_l:
+        if st.button("◀ Prev", key="prev_bot", disabled=(st.session_state["page"] == 0)):
+            st.session_state["page"] -= 1
+            st.rerun()
+    with bot_c:
+        page_pick_bot = st.selectbox(
+            "Page", range(1, total_pages + 1),
+            index=st.session_state["page"],
+            key="_page_bot",
+            label_visibility="collapsed",
+        )
+        if page_pick_bot - 1 != st.session_state["page"]:
+            st.session_state["page"] = page_pick_bot - 1
+            st.rerun()
+    with bot_r:
+        if st.button("Next ▶", key="next_bot", disabled=(st.session_state["page"] >= total_pages - 1)):
+            st.session_state["page"] += 1
+            st.rerun()
+    st.markdown(
+        f"<p class='secondary-text' style='text-align:center;'>Page {st.session_state['page'] + 1} of {total_pages}</p>",
+        unsafe_allow_html=True,
+    )
 
 
 # ============================== DETAIL ==============================
