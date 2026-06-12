@@ -953,37 +953,33 @@ def detail(prof_data):
         # Angle scores in a card
         ang = llm.get("angles", {}) or {}
         if ang:
-            st.markdown(f"""
-            <div class="card card-neutral">
-                <h4>📊 Fit Assessment Angles</h4>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
-            """, unsafe_allow_html=True)
-
             angle_labels = {
                 "recent_direct": "Recent Direct Work",
                 "transferable_methods": "Transferable Methods",
                 "interest_alignment": "Interest Alignment",
-                "trajectory": "Research Trajectory"
+                "trajectory": "Research Trajectory",
             }
-
+            angle_cells = ""
             for k, v in ang.items():
                 label = angle_labels.get(k, k.replace("_", " ").title())
                 color = "#22C55E" if v >= 60 else "#3B82F6" if v >= 30 else "#F59E0B"
-                st.markdown(f"""
-                    <div style="padding: 8px; background: rgba(255,255,255,0.02); border-radius: 6px;">
-                        <div style="font-size: 11px; color: #B8C0CC; text-transform: uppercase;">{label}</div>
-                        <div style="font-size: 16px; font-weight: 600; color: {color};">{v}/100</div>
-                        <div style="background: rgba(255,255,255,0.1); height: 4px; border-radius: 2px; margin-top: 4px;">
-                            <div style="width: {v}%; height: 100%; background: {color}; border-radius: 2px;"></div>
-                        </div>
+                angle_cells += f"""
+                <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:6px;">
+                    <div style="font-size:11px;color:#B8C0CC;text-transform:uppercase;">{label}</div>
+                    <div style="font-size:16px;font-weight:600;color:{color};">{v}/100</div>
+                    <div style="background:rgba(255,255,255,0.1);height:4px;border-radius:2px;margin-top:4px;">
+                        <div style="width:{v}%;height:100%;background:{color};border-radius:2px;"></div>
                     </div>
-                """, unsafe_allow_html=True)
-
-            st.markdown("""
+                </div>"""
+            st.markdown(f"""
+            <div class="card card-neutral">
+                <h4>📊 Fit Assessment Angles</h4>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px;">
+                    {angle_cells}
                 </div>
                 <div class="muted-text">
-                    <strong>Methodology:</strong> Each angle assessed independently (0-100) based on publication analysis,
-                    stated interests, and research trajectory over past 5 years.
+                    <strong>Methodology:</strong> Each angle assessed independently (0-100) based on
+                    publication analysis, stated interests, and research trajectory over past 5 years.
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -1011,54 +1007,44 @@ def detail(prof_data):
         # Research Proposal Alignment Scores with clear explanations
         best_subthemes = (llm.get("best_subthemes") or [])[:5]
         if best_subthemes:
-            st.markdown("""
-            <div class="card card-neutral">
-                <h4>📋 Research Proposal Alignment Analysis</h4>
-                <div class="muted-text" style="margin-bottom: 16px;">
-                    <strong>Legend:</strong> Subtheme ID refers to research proposal categories in the Schmidt Sciences agenda.
-                    Scores reflect evidence strength (0-100): 65+ = Direct fit, 40-64 = Adjacent relevance, &lt;40 = Limited connection
-                </div>
-            """, unsafe_allow_html=True)
-
+            subtheme_rows = ""
             for b in best_subthemes:
                 sid = b.get("id", "?")
                 s = b.get("score", 0)
-                title = ST_TITLE.get(sid, "Unknown category")
+                st_title = ST_TITLE.get(sid, "Unknown category")
                 recency = b.get("recency", "?")
                 angle = b.get("angle", "")
                 evidence = b.get("evidence", "No evidence cited")
-
-                # Color coding for score levels
-                if s >= 65:
-                    col = "#22C55E"
-                    level = "Direct Fit"
-                elif s >= 40:
-                    col = "#3B82F6"
-                    level = "Adjacent"
-                else:
-                    col = "#8A8F98"
-                    level = "Limited"
-
-                st.markdown(f"""
-                <div style="margin-bottom: 16px; padding: 12px; border-left: 3px solid {col}; background: rgba(255,255,255,0.02);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                col = "#22C55E" if s >= 65 else "#3B82F6" if s >= 40 else "#8A8F98"
+                level = "Direct Fit" if s >= 65 else "Adjacent" if s >= 40 else "Limited"
+                ev_text = evidence[:200] + ("..." if len(evidence) > 200 else "")
+                subtheme_rows += f"""
+                <div style="margin-bottom:16px;padding:12px;border-left:3px solid {col};background:rgba(255,255,255,0.02);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                         <div>
-                            <strong style="color: #F5F7FA;">Proposal {sid}: {title}</strong>
-                            <span class="badge" style="background: {col}; margin-left: 8px;">{level}</span>
+                            <strong style="color:#F5F7FA;">Proposal {sid}: {st_title}</strong>
+                            <span class="badge" style="background:{col};margin-left:8px;">{level}</span>
                         </div>
-                        <div style="font-size: 18px; font-weight: bold; color: {col};">{s}/100</div>
+                        <div style="font-size:18px;font-weight:bold;color:{col};">{s}/100</div>
                     </div>
-                    <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; margin-bottom: 8px;">
-                        <div style="width: {int(s)}%; height: 100%; background: {col}; border-radius: 3px;"></div>
+                    <div style="background:rgba(255,255,255,0.1);height:6px;border-radius:3px;margin-bottom:8px;">
+                        <div style="width:{int(s)}%;height:100%;background:{col};border-radius:3px;"></div>
                     </div>
                     <div class="muted-text">
                         <strong>Timeline:</strong> {recency} | <strong>Approach:</strong> {angle}<br>
-                        <strong>Evidence:</strong> {evidence[:200]}{'...' if len(evidence) > 200 else ''}
+                        <strong>Evidence:</strong> {ev_text}
                     </div>
+                </div>"""
+            st.markdown(f"""
+            <div class="card card-neutral">
+                <h4>📋 Research Proposal Alignment Analysis</h4>
+                <div class="muted-text" style="margin-bottom:16px;">
+                    <strong>Legend:</strong> Subtheme ID refers to research proposal categories in the Schmidt Sciences agenda.
+                    Scores reflect evidence strength (0-100): 65+ = Direct fit, 40-64 = Adjacent relevance, &lt;40 = Limited connection
                 </div>
-                """, unsafe_allow_html=True)
-
-            st.markdown("</div>", unsafe_allow_html=True)
+                {subtheme_rows}
+            </div>
+            """, unsafe_allow_html=True)
         if tier == "EXCLUDED" and llm.get("out_of_scope", {}).get("flag"):
             st.error(f"Out of scope — {llm['out_of_scope'].get('area','')}: {llm['out_of_scope'].get('reason','')}")
 
@@ -1066,12 +1052,6 @@ def detail(prof_data):
         strengths = llm.get("strengths") or []; gaps = llm.get("gaps") or []; stops = llm.get("deal_breakers") or []
 
         if strengths or gaps or stops:
-            st.markdown("""
-            <div class="card card-neutral">
-                <h4>🎯 Decision Matrix</h4>
-            """, unsafe_allow_html=True)
-
-            # Generate final recommendation based on evidence analysis
             total_evidence = len(strengths)
             total_gaps = len(gaps)
             total_stops = len(stops)
@@ -1093,59 +1073,51 @@ def detail(prof_data):
                 rec_color = "#EF4444"
                 rec_reason = f"Insufficient evidence ({total_evidence} strengths, {total_gaps} gaps)"
 
-            # Final Recommendation Box
+            strengths_html = ""
+            if strengths:
+                strengths_html = f"""
+                <div style="margin-bottom:16px;">
+                    <h5 style="color:#22C55E;margin-bottom:8px;">✅ Strongest Evidence ({total_evidence} factors)</h5>
+                    {format_bullet_list(strengths, "positive")}
+                    <div style="color:#B8C0CC;font-size:11px;margin-top:8px;">These factors strongly support funding consideration</div>
+                </div>"""
+            gaps_html = ""
+            if gaps:
+                gaps_html = f"""
+                <div style="margin-bottom:16px;">
+                    <h5 style="color:#F59E0B;margin-bottom:8px;">⚠️ Gaps / Debatable ({total_gaps} factors)</h5>
+                    {format_bullet_list(gaps, "warning")}
+                    <div style="color:#B8C0CC;font-size:11px;margin-top:8px;">These areas need additional consideration or may limit application strength</div>
+                </div>"""
+            stops_html = ""
+            if stops:
+                stops_html = f"""
+                <div style="margin-bottom:16px;">
+                    <h5 style="color:#EF4444;margin-bottom:8px;">🚫 Deal-breakers ({total_stops} factors)</h5>
+                    {format_bullet_list(stops, "critical")}
+                    <div style="color:#B8C0CC;font-size:11px;margin-top:8px;">These factors prevent funding recommendation under current RFP criteria</div>
+                </div>"""
+
             st.markdown(f"""
-            <div style="background: linear-gradient(135deg, {rec_color}15, {rec_color}08); border: 1px solid {rec_color}40; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                    <h4 style="color: {rec_color}; margin: 0; margin-right: 12px;">{recommendation}</h4>
-                    <span style="background: {rec_color}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
-                        FIT SCORE: {fit_score}/100
-                    </span>
+            <div class="card card-neutral">
+                <h4>🎯 Decision Matrix</h4>
+                <div style="background:linear-gradient(135deg,{rec_color}15,{rec_color}08);border:1px solid {rec_color}40;border-radius:8px;padding:16px;margin-bottom:16px;">
+                    <div style="display:flex;align-items:center;margin-bottom:8px;">
+                        <h4 style="color:{rec_color};margin:0;margin-right:12px;">{recommendation}</h4>
+                        <span style="background:{rec_color};color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">
+                            FIT SCORE: {fit_score}/100
+                        </span>
+                    </div>
+                    <div style="color:#F5F7FA;margin-bottom:8px;">{rec_reason}</div>
+                    <div style="color:#B8C0CC;font-size:12px;">
+                        Analysis based on {total_evidence + total_gaps + total_stops} decision factors from LLM assessment
+                    </div>
                 </div>
-                <div style="color: #F5F7FA; margin-bottom: 8px;">{rec_reason}</div>
-                <div style="color: #B8C0CC; font-size: 12px;">
-                    Analysis based on {total_evidence + total_gaps + total_stops} decision factors from LLM assessment
-                </div>
+                {strengths_html}
+                {gaps_html}
+                {stops_html}
             </div>
             """, unsafe_allow_html=True)
-
-            if strengths:
-                strength_items = format_bullet_list(strengths, "positive")
-                st.markdown(f"""
-                <div style="margin-bottom: 16px;">
-                    <h5 style="color: #22C55E; margin-bottom: 8px;">✅ Strongest Evidence ({len(strengths)} factors)</h5>
-                    {strength_items}
-                    <div style="color: #B8C0CC; font-size: 11px; margin-top: 8px;">
-                        These factors strongly support funding consideration
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-
-            if gaps:
-                gap_items = format_bullet_list(gaps, "warning")
-                st.markdown(f"""
-                <div style="margin-bottom: 16px;">
-                    <h5 style="color: #F59E0B; margin-bottom: 8px;">⚠️ Gaps / Debatable ({len(gaps)} factors)</h5>
-                    {gap_items}
-                    <div style="color: #B8C0CC; font-size: 11px; margin-top: 8px;">
-                        These areas need additional consideration or may limit application strength
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-
-            if stops:
-                stop_items = format_bullet_list(stops, "critical")
-                st.markdown(f"""
-                <div style="margin-bottom: 16px;">
-                    <h5 style="color: #EF4444; margin-bottom: 8px;">🚫 Deal-breakers ({len(stops)} factors)</h5>
-                    {stop_items}
-                    <div style="color: #B8C0CC; font-size: 11px; margin-top: 8px;">
-                        These factors prevent funding recommendation under current RFP criteria
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-
-            st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("#### Research focus")
         fo = d.get("focus", {})
@@ -1154,7 +1126,7 @@ def detail(prof_data):
         st.markdown(f"""
         <div class="card card-neutral">
             <h4>Overall (career)</h4>
-            <p>{fo.get('overall','—')}</p>
+            <p>{fo.get('overall') or '—'}</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1162,41 +1134,38 @@ def detail(prof_data):
         st.markdown(f"""
         <div class="card card-neutral">
             <h4>Recent (last 5y)</h4>
-            <p>{fo.get('recent','—')}</p>
-            <div class="muted-text">source: {fo.get('source','—')}</div>
+            <p>{fo.get('recent') or '—'}</p>
+            <div class="muted-text">source: {fo.get('source') or '—'}</div>
         </div>
         """, unsafe_allow_html=True)
 
         # Top contributions section
         top_papers = (ac.get("top_cited") or [])[:config.TOP_PAPERS_SHOW]
         if top_papers:
-            st.markdown("""
-            <div class="card card-neutral">
-                <h4>📄 Top Contributions</h4>
-            """, unsafe_allow_html=True)
+            paper_rows = ""
             for w in top_papers:
-                title = w.get("title", "Title not available")
-                year = w.get('year', 'N/A')
-                citations = w.get('cited_by', 0)
+                wtitle = str(w.get("title", "Title not available")).replace("<", "&lt;").replace(">", "&gt;")
+                year = w.get("year", "N/A")
+                citations = w.get("cited_by", 0)
                 venue = w.get("venue", "")
                 url = w.get("url", "")
-
                 meta = f"{year}, {citations} citations"
                 if venue:
                     meta += f", {venue}"
-
-                # Only include link if URL exists and looks valid
-                valid_link = ""
-                if url and url.startswith(('http://', 'https://')):
-                    valid_link = f' <a href="{url}" target="_blank" style="color: #3B82F6;">[view]</a>'
-
-                st.markdown(f"""
-                <div style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                    <div style="font-weight: 500; color: #F5F7FA; margin-bottom: 4px;">{title}</div>
-                    <div style="color: #B8C0CC; font-size: 13px;">{meta}{valid_link}</div>
-                </div>
-                """, unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+                link_html = ""
+                if url and url.startswith(("http://", "https://")):
+                    link_html = f' <a href="{url}" target="_blank" style="color:#3B82F6;">[view]</a>'
+                paper_rows += f"""
+                <div style="margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <div style="font-weight:500;color:#F5F7FA;margin-bottom:4px;">{wtitle}</div>
+                    <div style="color:#B8C0CC;font-size:13px;">{meta}{link_html}</div>
+                </div>"""
+            st.markdown(f"""
+            <div class="card card-neutral">
+                <h4>📄 Top Contributions</h4>
+                {paper_rows}
+            </div>
+            """, unsafe_allow_html=True)
         else:
             st.markdown("""
             <div class="card card-neutral">
