@@ -303,10 +303,17 @@ st.markdown("""
 
 
 @st.cache_data
-def load():
+def load(_mtime=None):
     if not os.path.exists(config.OUT_JSON):
         return []
     return json.load(open(config.OUT_JSON))
+
+
+def _mtime():
+    try:
+        return os.path.getmtime(config.OUT_JSON)
+    except OSError:
+        return 0
 
 
 def badge(t):
@@ -425,7 +432,7 @@ def relbar(label, val, avg, color, lo=0.0, hi=1.0):
     ''', unsafe_allow_html=True)
 
 
-data = load()
+data = load(_mtime=_mtime())
 BM_AVG, DN_AVG = cohort_stats(data) if data else ({}, {})
 if "sel_data" not in st.session_state:
     st.session_state.sel_data = None
