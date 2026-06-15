@@ -1228,7 +1228,7 @@ def detail(prof_data):
 
             with st.expander(f"From {institute_short} website (honors, projects, supervision)"):
                 for k, v in ex.items():
-                    st.markdown(f"**{k}:** {v[:600]}")
+                    st.markdown(f"**{k}:** {str(v)[:600]}")
                 st.markdown(f"<span class='src'>source: {institute_short.lower()}_website · "
                             f"{profile_url}</span>", unsafe_allow_html=True)
 
