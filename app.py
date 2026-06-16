@@ -480,6 +480,7 @@ talks / network). This answers "how strong are they, and *for what*", independen
 # ============================== PDF EXPORT ==============================
 try:
     from fpdf import FPDF
+    from fpdf.enums import XPos, YPos
     _FPDF_OK = True
 except ImportError:
     _FPDF_OK = False
@@ -519,7 +520,7 @@ def generate_profile_pdf(d: dict) -> bytes:
     pdf.set_xy(18, 18)
     pdf.set_font("Helvetica", "B", 15)
     pdf.set_text_color(245, 247, 250)
-    pdf.cell(W - 40, 8, _ps(d.get("name", "Unknown")), ln=0)
+    pdf.cell(W - 40, 8, _ps(d.get("name", "Unknown")), new_x=XPos.RIGHT, new_y=YPos.TOP)
     # tier badge
     pdf.set_fill_color(*tier_color)
     pdf.set_xy(pdf.w - 55, 18)
@@ -529,7 +530,7 @@ def generate_profile_pdf(d: dict) -> bytes:
     pdf.set_font("Helvetica", "", 9)
     pdf.set_text_color(184, 192, 204)
     sub = f"{d.get('designation','')}{' · ' + d.get('department','') if d.get('department') else ''} · {d.get('institute','')}"
-    pdf.cell(W, 6, _ps(sub, 120), ln=1)
+    pdf.cell(W, 6, _ps(sub, 120), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_text_color(30, 30, 30)
 
     pdf.ln(6)
@@ -538,7 +539,7 @@ def generate_profile_pdf(d: dict) -> bytes:
         pdf.set_fill_color(243, 244, 246)
         pdf.set_font("Helvetica", "B", 10)
         pdf.set_text_color(30, 30, 30)
-        pdf.cell(W, 7, f"  {title}", fill=True, ln=1)
+        pdf.cell(W, 7, f"  {title}", fill=True, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         pdf.ln(2)
 
     def body(text, indent=0):
@@ -554,21 +555,21 @@ def generate_profile_pdf(d: dict) -> bytes:
         pdf.cell(55, 6, _ps(label))
         pdf.set_font("Helvetica", "", 9)
         pdf.set_text_color(30, 30, 30)
-        pdf.cell(W - 55, 6, _ps(str(value), 90), ln=1)
+        pdf.cell(W - 55, 6, _ps(str(value), 90), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
     # ── Fit Score ──
     fit = llm.get("overall_fit", 0) or 0
     conf = llm.get("confidence", "")
     pdf.set_font("Helvetica", "B", 22)
     pdf.set_text_color(*tier_color)
-    pdf.cell(28, 12, f"{fit}", ln=0)
+    pdf.cell(28, 12, f"{fit}", new_x=XPos.RIGHT, new_y=YPos.TOP)
     pdf.set_font("Helvetica", "", 10)
     pdf.set_text_color(80, 80, 80)
-    pdf.cell(20, 12, "/ 100", ln=0)
+    pdf.cell(20, 12, "/ 100", new_x=XPos.RIGHT, new_y=YPos.TOP)
     if conf:
         pdf.set_font("Helvetica", "B", 9)
         pdf.set_text_color(100, 100, 100)
-        pdf.cell(W - 48, 12, f"Confidence: {conf}", align="R", ln=1)
+        pdf.cell(W - 48, 12, f"Confidence: {conf}", align="R", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     else:
         pdf.ln(12)
 
@@ -614,7 +615,7 @@ def generate_profile_pdf(d: dict) -> bytes:
             pdf.cell(18, 5, f"{bscore}/100")
             pdf.set_font("Helvetica", "I", 8)
             pdf.set_text_color(100, 100, 100)
-            pdf.cell(W - 100, 5, _ps(evidence, 60), ln=1)
+            pdf.cell(W - 100, 5, _ps(evidence, 60), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         pdf.ln(2)
 
     # ── Decision Matrix ──
@@ -625,17 +626,17 @@ def generate_profile_pdf(d: dict) -> bytes:
         section("DECISION MATRIX")
         if strengths:
             pdf.set_font("Helvetica", "B", 9); pdf.set_text_color(31, 138, 76)
-            pdf.cell(W, 5, "  STRENGTHS", ln=1)
+            pdf.cell(W, 5, "  STRENGTHS", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             for s in strengths[:5]:
                 body(f"  • {s}", indent=4)
         if gaps:
             pdf.set_font("Helvetica", "B", 9); pdf.set_text_color(245, 158, 11)
-            pdf.cell(W, 5, "  GAPS", ln=1)
+            pdf.cell(W, 5, "  GAPS", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             for g in gaps[:5]:
                 body(f"  • {g}", indent=4)
         if stops:
             pdf.set_font("Helvetica", "B", 9); pdf.set_text_color(179, 56, 47)
-            pdf.cell(W, 5, "  DEAL-BREAKERS", ln=1)
+            pdf.cell(W, 5, "  DEAL-BREAKERS", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             for s in stops[:3]:
                 body(f"  • {s}", indent=4)
         pdf.ln(2)
@@ -663,7 +664,7 @@ def generate_profile_pdf(d: dict) -> bytes:
             pdf.set_font("Helvetica", "", 8)
             pdf.set_text_color(47, 111, 176)
             pdf.set_x(18)
-            pdf.cell(W, 5, f"{label}: {_ps(v, 90)}", ln=1)
+            pdf.cell(W, 5, f"{label}: {_ps(v, 90)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         pdf.ln(2)
 
     # ── Footer ──
@@ -685,122 +686,232 @@ def health_dashboard(data):
         st.warning("No data loaded.")
         return
 
-    import datetime, collections
+    import collections
+    import pandas as pd
 
-    # ── pre-compute ──
     total = len(data)
     tiers = [d.get("scores", {}).get("tier", "UNRELATED") for d in data]
     institutions = [d.get("institute", "") or "Unknown" for d in data]
     inst_counter = collections.Counter(institutions)
+    direct_adj = [d for d in data if d.get("scores", {}).get("tier") in ("DIRECT", "ADJACENT")]
 
-    def pct(n): return f"{n/total*100:.1f}%" if total else "0%"
+    def pct(n): return f"{n / total * 100:.1f}%" if total else "0%"
+    def fpct(n): return round(n / total * 100, 1) if total else 0.0
 
-    def field_coverage(fn):
-        count = sum(1 for d in data if fn(d))
-        return count, pct(count)
-
-    # Summary row
-    st.markdown('<h3 style="color:#F5F7FA;margin-top:0">📊 Dataset Health & Coverage</h3>', unsafe_allow_html=True)
-    m1, m2, m3, m4, m5 = st.columns(5)
+    # ── Top summary strip ──
+    m1, m2, m3, m4, m5, m6 = st.columns(6)
     m1.metric("Total Profiles",   total)
     m2.metric("Institutions",     len(inst_counter))
-    m3.metric("Direct Fit",       tiers.count("DIRECT"))
-    m4.metric("Adjacent",         tiers.count("ADJACENT"))
-    m5.metric("Avg Fit (Adjacent+Direct)",
-              f"{_avg_fit([d for d in data if d.get('scores',{}).get('tier') in ('DIRECT','ADJACENT')]):.0f}")
+    m3.metric("DIRECT",           tiers.count("DIRECT"),
+              delta=f"{fpct(tiers.count('DIRECT'))}%", delta_color="normal")
+    m4.metric("ADJACENT",         tiers.count("ADJACENT"),
+              delta=f"{fpct(tiers.count('ADJACENT'))}%", delta_color="normal")
+    m5.metric("Avg Fit (D+A)",
+              f"{_avg_fit(direct_adj):.0f}/100")
+    m6.metric("UNRELATED",        tiers.count("UNRELATED"),
+              delta=f"{fpct(tiers.count('UNRELATED'))}%", delta_color="off")
 
-    st.markdown("---")
+    st.markdown("<hr style='margin:8px 0 12px 0;border-color:#2D3748'>", unsafe_allow_html=True)
 
-    col_a, col_b = st.columns(2)
+    tab_cov, tab_scoring, tab_inst, tab_fresh = st.tabs(
+        ["📋 Field Coverage", "🎯 Scoring Quality", "🏛️ Institutions", "📅 Freshness"]
+    )
 
-    # ── Field Coverage ──
-    with col_a:
-        st.markdown("**Field Coverage**")
-        coverage_checks = [
-            ("Name",                lambda d: bool(d.get("name"))),
-            ("Designation",         lambda d: bool(d.get("designation"))),
-            ("Department",          lambda d: bool(d.get("department"))),
-            ("Email",               lambda d: bool(d.get("email"))),
-            ("Photo",               lambda d: bool(d.get("photo_ok"))),
-            ("Google Scholar URL",  lambda d: bool((d.get("links") or {}).get("google_scholar_url"))),
-            ("ORCID URL",           lambda d: bool((d.get("links") or {}).get("orcid_url"))),
-            ("Scopus URL",          lambda d: bool((d.get("links") or {}).get("scopus_url"))),
-            ("Research Interests",  lambda d: bool(d.get("research_interests"))),
-            ("H-Index (any)",       lambda d: bool(_standing(d).get("h_index"))),
-            ("Citations (any)",     lambda d: bool(_standing(d).get("citations"))),
-            ("OpenAlex Resolved",   lambda d: bool((d.get("academic") or {}).get("id"))),
-            ("Web Signals",         lambda d: bool(d.get("web_signals") and not d.get("web_signals", {}).get("error"))),
-        ]
-        rows = []
-        for label, fn in coverage_checks:
-            n, p = field_coverage(fn)
-            bar_w = int(n / total * 20) if total else 0
-            bar = "█" * bar_w + "░" * (20 - bar_w)
-            rows.append({"Field": label, "Count": n, "%": p, "Coverage": bar})
+    # ──────────────────────────────────────────────────────────────────────────
+    # TAB 1: Field Coverage
+    # ──────────────────────────────────────────────────────────────────────────
+    with tab_cov:
+        coverage_groups = {
+            "Basic Info": [
+                ("Name",           lambda d: bool(d.get("name"))),
+                ("Designation",    lambda d: bool(d.get("designation"))),
+                ("Department",     lambda d: bool(d.get("department"))),
+                ("Email",          lambda d: bool(d.get("email"))),
+                ("Photo",          lambda d: bool(d.get("photo_ok"))),
+            ],
+            "Academic IDs": [
+                ("Google Scholar", lambda d: bool((d.get("links") or {}).get("google_scholar_url"))),
+                ("ORCID",          lambda d: bool((d.get("links") or {}).get("orcid_url"))),
+                ("Scopus",         lambda d: bool((d.get("links") or {}).get("scopus_url"))),
+                ("OpenAlex ID",    lambda d: bool((d.get("academic") or {}).get("id"))),
+            ],
+            "Scoring Data": [
+                ("Research Summary",  lambda d: bool(d.get("research_interests") or (d.get("focus") or {}).get("research_summary"))),
+                ("H-Index (any)",     lambda d: bool(_standing(d).get("h_index"))),
+                ("Citations (any)",   lambda d: bool(_standing(d).get("citations"))),
+                ("LLM Scored",        lambda d: bool((d.get("scores", {}).get("llm") or {}).get("overall_fit"))),
+                ("Web Signals",       lambda d: bool(d.get("web_signals") and not (d.get("web_signals") or {}).get("error"))),
+            ],
+        }
 
-        import pandas as pd
-        st.dataframe(pd.DataFrame(rows).set_index("Field"), use_container_width=True)
+        for group_name, checks in coverage_groups.items():
+            st.markdown(f"**{group_name}**")
+            for label, fn in checks:
+                n = sum(1 for d in data if fn(d))
+                ratio = n / total if total else 0
+                color = "#1E8A4C" if ratio >= 0.8 else "#F59E0B" if ratio >= 0.5 else "#B3382F"
+                st.markdown(
+                    f'<div style="display:flex;align-items:center;gap:10px;margin:3px 0">'
+                    f'<span style="width:160px;color:#B8C0CC;font-size:13px">{label}</span>'
+                    f'<div style="flex:1;background:#1F2937;border-radius:4px;height:10px">'
+                    f'<div style="width:{ratio*100:.0f}%;background:{color};height:10px;border-radius:4px"></div></div>'
+                    f'<span style="width:80px;text-align:right;color:{color};font-size:13px;font-weight:600">'
+                    f'{n}/{total} ({ratio*100:.0f}%)</span>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            st.markdown("")
 
-    # ── Score Quality ──
-    with col_b:
-        st.markdown("**Score & Confidence Distribution**")
-        conf_counts = collections.Counter(
-            (d.get("scores", {}).get("llm", {}) or {}).get("confidence", "UNKNOWN")
+    # ──────────────────────────────────────────────────────────────────────────
+    # TAB 2: Scoring Quality
+    # ──────────────────────────────────────────────────────────────────────────
+    with tab_scoring:
+        sc1, sc2, sc3 = st.columns(3)
+
+        with sc1:
+            st.markdown("**Confidence Distribution**")
+            conf_counts = collections.Counter(
+                ((d.get("scores", {}).get("llm") or {}).get("confidence") or "UNKNOWN")
+                for d in data
+            )
+            for label, color, key in [
+                ("HIGH",    "#1E8A4C", "HIGH"),
+                ("MEDIUM",  "#F59E0B", "MEDIUM"),
+                ("LOW",     "#B3382F", "LOW"),
+                ("UNKNOWN", "#6B7280", "UNKNOWN"),
+            ]:
+                n = conf_counts.get(key, 0)
+                if n == 0:
+                    continue
+                ratio = n / total
+                st.markdown(
+                    f'<div style="margin:4px 0">'
+                    f'<span style="color:{color};font-weight:600;font-size:13px">{label}</span>'
+                    f'<span style="color:#6B7280;font-size:12px"> — {n} ({ratio*100:.0f}%)</span>'
+                    f'<div style="background:#1F2937;border-radius:3px;height:8px;margin-top:3px">'
+                    f'<div style="width:{ratio*100:.0f}%;background:{color};height:8px;border-radius:3px"></div></div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+        with sc2:
+            st.markdown("**Avg Fit Score by Tier**")
+            tier_colors = {"DIRECT": "#1E8A4C", "ADJACENT": "#2F6FB0",
+                           "UNRELATED": "#6B7280", "EXCLUDED": "#B3382F"}
+            for t in ["DIRECT", "ADJACENT", "UNRELATED", "EXCLUDED"]:
+                profs = [d for d in data if d.get("scores", {}).get("tier") == t]
+                avg   = _avg_fit(profs)
+                color = tier_colors[t]
+                st.markdown(
+                    f'<div style="margin:6px 0">'
+                    f'<span style="color:{color};font-weight:600;font-size:13px">{TIER[t][1]}</span>'
+                    f'<span style="color:#B8C0CC;font-size:12px"> {len(profs)} profiles</span>'
+                    f'<div style="background:#1F2937;border-radius:3px;height:8px;margin-top:3px">'
+                    f'<div style="width:{avg:.0f}%;background:{color};height:8px;border-radius:3px"></div></div>'
+                    f'<span style="color:{color};font-size:13px;font-weight:700">{avg:.0f}/100</span>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+        with sc3:
+            st.markdown("**Seniority Breakdown**")
+            sen_counts = collections.Counter(
+                _standing(d).get("seniority", "Unknown") for d in data
+            )
+            sen_order = ["Highly Eminent", "Eminent", "Established", "Emerging", "Unknown"]
+            sen_colors = {"Highly Eminent": "#1E8A4C", "Eminent": "#2F6FB0",
+                          "Established": "#7C3AED", "Emerging": "#F59E0B", "Unknown": "#6B7280"}
+            for s in sen_order:
+                n = sen_counts.get(s, 0)
+                if n == 0:
+                    continue
+                color = sen_colors.get(s, "#6B7280")
+                st.markdown(
+                    f'<span style="color:{color};font-weight:600">{s}</span>'
+                    f'<span style="color:#6B7280"> — {n} ({pct(n)})</span>  \n',
+                    unsafe_allow_html=True,
+                )
+            # remaining unknown-like
+            for s, n in sorted(sen_counts.items(), key=lambda x: -x[1]):
+                if s not in sen_order:
+                    st.markdown(f'<span style="color:#6B7280">{s} — {n}</span>', unsafe_allow_html=True)
+
+        st.markdown("---")
+        # Fit score distribution histogram
+        st.markdown("**Fit Score Distribution (all profiles)**")
+        fit_scores = [
+            int((d.get("scores", {}).get("llm") or {}).get("overall_fit") or 0)
             for d in data
+        ]
+        buckets = collections.Counter(s // 10 * 10 for s in fit_scores)
+        hist_df = pd.DataFrame(
+            [{"Score Range": f"{b}–{b+9}", "Count": buckets.get(b, 0)} for b in range(0, 100, 10)]
+        ).set_index("Score Range")
+        st.bar_chart(hist_df, height=180)
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # TAB 3: Institutions
+    # ──────────────────────────────────────────────────────────────────────────
+    with tab_inst:
+        inst_stats = collections.defaultdict(lambda: {
+            "total": 0, "direct": 0, "adjacent": 0, "fit_scores": []
+        })
+        for d in data:
+            inst = d.get("institute", "Unknown") or "Unknown"
+            t    = d.get("scores", {}).get("tier", "UNRELATED")
+            fs   = (d.get("scores", {}).get("llm") or {}).get("overall_fit") or 0
+            inst_stats[inst]["total"]    += 1
+            inst_stats[inst]["fit_scores"].append(int(fs))
+            if t == "DIRECT":   inst_stats[inst]["direct"]   += 1
+            if t == "ADJACENT": inst_stats[inst]["adjacent"] += 1
+
+        rows_i = []
+        for inst, v in inst_stats.items():
+            fit_n = v["direct"] + v["adjacent"]
+            avg_f = round(sum(v["fit_scores"]) / len(v["fit_scores"])) if v["fit_scores"] else 0
+            rows_i.append({
+                "Institution":    inst,
+                "Total":          v["total"],
+                "DIRECT":         v["direct"],
+                "ADJACENT":       v["adjacent"],
+                "D+A":            fit_n,
+                "Fit Rate":       f"{fit_n/v['total']*100:.0f}%",
+                "Avg Fit":        f"{avg_f}/100",
+            })
+        rows_i.sort(key=lambda x: (-x["D+A"], -int(x["Avg Fit"].replace("/100", ""))))
+
+        st.dataframe(
+            pd.DataFrame(rows_i).set_index("Institution"),
+            width="stretch",
+            height=min(600, 38 + len(rows_i) * 35),
         )
-        st.markdown(f"- 🟢 HIGH confidence: **{conf_counts.get('HIGH',0)}** ({pct(conf_counts.get('HIGH',0))})")
-        st.markdown(f"- 🟡 MEDIUM confidence: **{conf_counts.get('MEDIUM',0)}** ({pct(conf_counts.get('MEDIUM',0))})")
-        st.markdown(f"- 🔴 LOW confidence: **{conf_counts.get('LOW',0)}** ({pct(conf_counts.get('LOW',0))})")
 
-        st.markdown("**Avg Fit Score by Tier**")
-        for t in ["DIRECT", "ADJACENT", "UNRELATED", "EXCLUDED"]:
-            profs = [d for d in data if d.get("scores", {}).get("tier") == t]
-            avg = _avg_fit(profs)
-            st.markdown(f"- {TIER[t][1]}: **{avg:.0f}/100** ({len(profs)} profiles)")
+    # ──────────────────────────────────────────────────────────────────────────
+    # TAB 4: Freshness
+    # ──────────────────────────────────────────────────────────────────────────
+    with tab_fresh:
+        dates = collections.Counter()
+        for d in data:
+            gen = (d.get("_generated") or "")[:10]
+            if gen:
+                dates[gen] += 1
 
-        st.markdown("**Seniority Breakdown**")
-        sen_counts = collections.Counter(
-            _standing(d).get("seniority", "Unknown") for d in data
-        )
-        for s, n in sorted(sen_counts.items(), key=lambda x: -x[1]):
-            st.markdown(f"- {s}: **{n}** ({pct(n)})")
+        if dates:
+            newest = max(dates)
+            oldest = min(dates)
+            f1, f2, f3 = st.columns(3)
+            f1.metric("Newest Batch",   newest)
+            f2.metric("Oldest Batch",   oldest)
+            f3.metric("Date Buckets",   len(dates))
 
-    st.markdown("---")
-
-    # ── Institution breakdown ──
-    st.markdown("**Top Institutions by DIRECT + ADJACENT count**")
-    inst_fit = collections.defaultdict(lambda: {"total": 0, "fit": 0})
-    for d in data:
-        inst = d.get("institute", "Unknown") or "Unknown"
-        t = d.get("scores", {}).get("tier", "UNRELATED")
-        inst_fit[inst]["total"] += 1
-        if t in ("DIRECT", "ADJACENT"):
-            inst_fit[inst]["fit"] += 1
-
-    rows2 = sorted(inst_fit.items(), key=lambda x: -x[1]["fit"])[:25]
-    import pandas as pd
-    df2 = pd.DataFrame([
-        {"Institution": inst, "Total": v["total"],
-         "Direct+Adjacent": v["fit"],
-         "Fit Rate": f"{v['fit']/v['total']*100:.0f}%" if v["total"] else "0%"}
-        for inst, v in rows2
-    ]).set_index("Institution")
-    st.dataframe(df2, use_container_width=True)
-
-    # ── Data freshness ──
-    st.markdown("**Data Freshness** (profiles by generation date)")
-    dates = collections.Counter()
-    for d in data:
-        gen = (d.get("_generated") or "")[:10]
-        if gen:
-            dates[gen] += 1
-    if dates:
-        newest = max(dates)
-        oldest = min(dates)
-        st.markdown(f"Newest: **{newest}** · Oldest: **{oldest}** · Date buckets: **{len(dates)}**")
-        top_dates = sorted(dates.items(), reverse=True)[:8]
-        for date, cnt in top_dates:
-            st.markdown(f"- {date}: {cnt} profiles")
+            st.markdown("**Profiles per generation date**")
+            date_df = pd.DataFrame(
+                sorted(dates.items(), reverse=True),
+                columns=["Date", "Profiles"]
+            ).set_index("Date")
+            st.bar_chart(date_df, height=200)
+        else:
+            st.info("No generation date metadata found.")
 
 
 def _standing(d):
@@ -1089,18 +1200,8 @@ def home():
 # ============================== DETAIL ==============================
 def detail(prof_data):
     d = prof_data
-    _back_col, _, _dl_col = st.columns([2, 6, 2])
-    with _back_col:
-        if st.button("← Back to ranking"):
-            st.session_state.sel_data = None; st.rerun()
-    with _dl_col:
-        if _FPDF_OK:
-            _pdf = generate_profile_pdf(d)
-            _fname = (d.get("name") or "profile").replace(" ", "_") + ".pdf"
-            st.download_button("📄 Download PDF", _pdf, _fname, "application/pdf",
-                               use_container_width=True)
-        else:
-            st.caption("PDF: install fpdf2")
+    if st.button("← Back to ranking"):
+        st.session_state.sel_data = None; st.rerun()
     ac = d.get("academic", {}); sc = d.get("scores", {}); llm = sc.get("llm", {})
     standing_raw = sc.get("standing")
     stand = standing_raw if isinstance(standing_raw, dict) else {}; tier = sc.get("tier", "UNRELATED")
@@ -1151,6 +1252,16 @@ def detail(prof_data):
 
         if d.get("identity_sanity"):
             st.warning(f"Identity check: {d['identity_sanity']}")
+
+    # PDF download — placed after header, before detailed sections
+    if _FPDF_OK:
+        _pdf = generate_profile_pdf(d)
+        _fname = (d.get("name") or "profile").replace(" ", "_") + ".pdf"
+        _c1, _c2, _c3 = st.columns([5, 2, 5])
+        with _c2:
+            st.download_button("📄 Download PDF", _pdf, _fname, "application/pdf",
+                               width="stretch")
+    st.markdown("<hr style='margin: 4px 0 12px 0; border-color: #2D3748;'>", unsafe_allow_html=True)
 
     # ---- Fit Summary (Prominent) ----
     fit_score = llm.get("overall_fit", 0)
