@@ -477,6 +477,343 @@ talks / network). This answers "how strong are they, and *for what*", independen
 """)
 
 
+# ============================== PDF EXPORT ==============================
+try:
+    from fpdf import FPDF
+    _FPDF_OK = True
+except ImportError:
+    _FPDF_OK = False
+
+
+def _ps(text, limit=None):
+    """Encode text to latin-1 safe string for FPDF core fonts."""
+    s = str(text) if text else ""
+    if limit:
+        s = s[:limit]
+    return s.encode("latin-1", errors="replace").decode("latin-1")
+
+
+def generate_profile_pdf(d: dict) -> bytes:
+    if not _FPDF_OK:
+        return b""
+    sc   = d.get("scores", {})
+    llm  = sc.get("llm", {}) if isinstance(sc.get("llm"), dict) else {}
+    stand_raw = sc.get("standing")
+    stand = stand_raw if isinstance(stand_raw, dict) else {}
+    ang   = llm.get("angles", {}) if isinstance(llm.get("angles"), dict) else {}
+    tier  = sc.get("tier", "UNRELATED")
+    tier_label = {"DIRECT": "DIRECT FIT", "ADJACENT": "ADJACENT",
+                  "UNRELATED": "UNRELATED", "EXCLUDED": "OUT OF SCOPE"}.get(tier, tier)
+    tier_color = {"DIRECT": (31, 138, 76), "ADJACENT": (47, 111, 176),
+                  "UNRELATED": (138, 143, 152), "EXCLUDED": (179, 56, 47)}.get(tier, (100, 100, 100))
+
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_margins(15, 15, 15)
+    W = pdf.w - 30  # usable width
+
+    # ── Header ──
+    pdf.set_fill_color(17, 24, 39)
+    pdf.rect(15, 15, W, 28, "F")
+    pdf.set_xy(18, 18)
+    pdf.set_font("Helvetica", "B", 15)
+    pdf.set_text_color(245, 247, 250)
+    pdf.cell(W - 40, 8, _ps(d.get("name", "Unknown")), ln=0)
+    # tier badge
+    pdf.set_fill_color(*tier_color)
+    pdf.set_xy(pdf.w - 55, 18)
+    pdf.set_font("Helvetica", "B", 8)
+    pdf.cell(38, 8, _ps(tier_label), align="C", fill=True)
+    pdf.set_xy(18, 27)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.set_text_color(184, 192, 204)
+    sub = f"{d.get('designation','')}{' · ' + d.get('department','') if d.get('department') else ''} · {d.get('institute','')}"
+    pdf.cell(W, 6, _ps(sub, 120), ln=1)
+    pdf.set_text_color(30, 30, 30)
+
+    pdf.ln(6)
+
+    def section(title):
+        pdf.set_fill_color(243, 244, 246)
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.set_text_color(30, 30, 30)
+        pdf.cell(W, 7, f"  {title}", fill=True, ln=1)
+        pdf.ln(2)
+
+    def body(text, indent=0):
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_text_color(50, 50, 50)
+        pdf.set_x(15 + indent)
+        pdf.multi_cell(W - indent, 5, _ps(text))
+        pdf.ln(1)
+
+    def row2(label, value, y_offset=0):
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_text_color(80, 80, 80)
+        pdf.cell(55, 6, _ps(label))
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_text_color(30, 30, 30)
+        pdf.cell(W - 55, 6, _ps(str(value), 90), ln=1)
+
+    # ── Fit Score ──
+    fit = llm.get("overall_fit", 0) or 0
+    conf = llm.get("confidence", "")
+    pdf.set_font("Helvetica", "B", 22)
+    pdf.set_text_color(*tier_color)
+    pdf.cell(28, 12, f"{fit}", ln=0)
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(80, 80, 80)
+    pdf.cell(20, 12, "/ 100", ln=0)
+    if conf:
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_text_color(100, 100, 100)
+        pdf.cell(W - 48, 12, f"Confidence: {conf}", align="R", ln=1)
+    else:
+        pdf.ln(12)
+
+    verdict = llm.get("verdict", "")
+    if verdict:
+        pdf.set_font("Helvetica", "I", 9)
+        pdf.set_text_color(60, 60, 60)
+        pdf.set_x(15)
+        pdf.multi_cell(W, 5, _ps(verdict, 400))
+    pdf.ln(4)
+
+    # ── Angles ──
+    angle_labels = {
+        "recent_direct": "Recent Direct Work",
+        "transferable_methods": "Transferable Methods",
+        "interest_alignment": "Interest Alignment",
+        "trajectory": "Research Trajectory",
+    }
+    if ang:
+        section("FIT ASSESSMENT ANGLES")
+        for key, label in angle_labels.items():
+            score = ang.get(key, 0) or 0
+            row2(f"  {label}:", f"{score}/100")
+        pdf.ln(2)
+
+    # ── Best Subthemes ──
+    best = [b for b in (llm.get("best_subthemes") or []) if isinstance(b, dict) and b.get("score", 0) > 0]
+    if best:
+        section("BEST MATCHING SUBTHEMES")
+        for b in best[:5]:
+            sid   = b.get("id", "")
+            bscore = b.get("score", 0)
+            evidence = b.get("evidence", "")
+            label_text = ST_TITLE.get(sid, sid)
+            pdf.set_font("Helvetica", "B", 9)
+            pdf.set_text_color(30, 30, 30)
+            pdf.set_x(18)
+            pdf.cell(12, 5, _ps(sid))
+            pdf.set_font("Helvetica", "", 9)
+            pdf.cell(70, 5, _ps(label_text, 45))
+            pdf.set_font("Helvetica", "B", 9)
+            pdf.set_text_color(*tier_color)
+            pdf.cell(18, 5, f"{bscore}/100")
+            pdf.set_font("Helvetica", "I", 8)
+            pdf.set_text_color(100, 100, 100)
+            pdf.cell(W - 100, 5, _ps(evidence, 60), ln=1)
+        pdf.ln(2)
+
+    # ── Decision Matrix ──
+    strengths = [s for s in (llm.get("strengths") or []) if s]
+    gaps      = [g for g in (llm.get("gaps") or []) if g]
+    stops     = [s for s in (llm.get("deal_breakers") or []) if s]
+    if strengths or gaps or stops:
+        section("DECISION MATRIX")
+        if strengths:
+            pdf.set_font("Helvetica", "B", 9); pdf.set_text_color(31, 138, 76)
+            pdf.cell(W, 5, "  STRENGTHS", ln=1)
+            for s in strengths[:5]:
+                body(f"  • {s}", indent=4)
+        if gaps:
+            pdf.set_font("Helvetica", "B", 9); pdf.set_text_color(245, 158, 11)
+            pdf.cell(W, 5, "  GAPS", ln=1)
+            for g in gaps[:5]:
+                body(f"  • {g}", indent=4)
+        if stops:
+            pdf.set_font("Helvetica", "B", 9); pdf.set_text_color(179, 56, 47)
+            pdf.cell(W, 5, "  DEAL-BREAKERS", ln=1)
+            for s in stops[:3]:
+                body(f"  • {s}", indent=4)
+        pdf.ln(2)
+
+    # ── Standing ──
+    section("ACADEMIC STANDING")
+    row2("  H-Index:", stand.get("h_index", "N/A"))
+    row2("  Citations:", f"{stand.get('citations', 0):,}" if stand.get("citations") else "N/A")
+    row2("  Seniority:", stand.get("seniority", "N/A"))
+    pdf.ln(2)
+
+    # ── Research Interests ──
+    ri = d.get("research_interests", "") or d.get("focus", {}).get("research_summary", "")
+    if ri:
+        section("RESEARCH INTERESTS")
+        body(ri, indent=2)
+        pdf.ln(1)
+
+    # ── Links ──
+    links = {k: v for k, v in (d.get("links", {}) or {}).items() if v}
+    if links:
+        section("PROFILES & LINKS")
+        for k, v in list(links.items())[:5]:
+            label = k.replace("_url", "").replace("_", " ").title()
+            pdf.set_font("Helvetica", "", 8)
+            pdf.set_text_color(47, 111, 176)
+            pdf.set_x(18)
+            pdf.cell(W, 5, f"{label}: {_ps(v, 90)}", ln=1)
+        pdf.ln(2)
+
+    # ── Footer ──
+    pdf.set_y(-18)
+    pdf.set_font("Helvetica", "I", 7)
+    pdf.set_text_color(150, 150, 150)
+    import datetime
+    pdf.cell(W, 5,
+             f"Schmidt AI Dashboard · {d.get('institute', '')} · Generated {datetime.date.today()}"
+             f" · Fit scores are AI-assisted estimates, not endorsements.",
+             align="C")
+
+    return bytes(pdf.output())
+
+
+# ============================== HEALTH DASHBOARD ==============================
+def health_dashboard(data):
+    if not data:
+        st.warning("No data loaded.")
+        return
+
+    import datetime, collections
+
+    # ── pre-compute ──
+    total = len(data)
+    tiers = [d.get("scores", {}).get("tier", "UNRELATED") for d in data]
+    institutions = [d.get("institute", "") or "Unknown" for d in data]
+    inst_counter = collections.Counter(institutions)
+
+    def pct(n): return f"{n/total*100:.1f}%" if total else "0%"
+
+    def field_coverage(fn):
+        count = sum(1 for d in data if fn(d))
+        return count, pct(count)
+
+    # Summary row
+    st.markdown('<h3 style="color:#F5F7FA;margin-top:0">📊 Dataset Health & Coverage</h3>', unsafe_allow_html=True)
+    m1, m2, m3, m4, m5 = st.columns(5)
+    m1.metric("Total Profiles",   total)
+    m2.metric("Institutions",     len(inst_counter))
+    m3.metric("Direct Fit",       tiers.count("DIRECT"))
+    m4.metric("Adjacent",         tiers.count("ADJACENT"))
+    m5.metric("Avg Fit (Adjacent+Direct)",
+              f"{_avg_fit([d for d in data if d.get('scores',{}).get('tier') in ('DIRECT','ADJACENT')]):.0f}")
+
+    st.markdown("---")
+
+    col_a, col_b = st.columns(2)
+
+    # ── Field Coverage ──
+    with col_a:
+        st.markdown("**Field Coverage**")
+        coverage_checks = [
+            ("Name",                lambda d: bool(d.get("name"))),
+            ("Designation",         lambda d: bool(d.get("designation"))),
+            ("Department",          lambda d: bool(d.get("department"))),
+            ("Email",               lambda d: bool(d.get("email"))),
+            ("Photo",               lambda d: bool(d.get("photo_ok"))),
+            ("Google Scholar URL",  lambda d: bool((d.get("links") or {}).get("google_scholar_url"))),
+            ("ORCID URL",           lambda d: bool((d.get("links") or {}).get("orcid_url"))),
+            ("Scopus URL",          lambda d: bool((d.get("links") or {}).get("scopus_url"))),
+            ("Research Interests",  lambda d: bool(d.get("research_interests"))),
+            ("H-Index (any)",       lambda d: bool(_standing(d).get("h_index"))),
+            ("Citations (any)",     lambda d: bool(_standing(d).get("citations"))),
+            ("OpenAlex Resolved",   lambda d: bool((d.get("academic") or {}).get("id"))),
+            ("Web Signals",         lambda d: bool(d.get("web_signals") and not d.get("web_signals", {}).get("error"))),
+        ]
+        rows = []
+        for label, fn in coverage_checks:
+            n, p = field_coverage(fn)
+            bar_w = int(n / total * 20) if total else 0
+            bar = "█" * bar_w + "░" * (20 - bar_w)
+            rows.append({"Field": label, "Count": n, "%": p, "Coverage": bar})
+
+        import pandas as pd
+        st.dataframe(pd.DataFrame(rows).set_index("Field"), use_container_width=True)
+
+    # ── Score Quality ──
+    with col_b:
+        st.markdown("**Score & Confidence Distribution**")
+        conf_counts = collections.Counter(
+            (d.get("scores", {}).get("llm", {}) or {}).get("confidence", "UNKNOWN")
+            for d in data
+        )
+        st.markdown(f"- 🟢 HIGH confidence: **{conf_counts.get('HIGH',0)}** ({pct(conf_counts.get('HIGH',0))})")
+        st.markdown(f"- 🟡 MEDIUM confidence: **{conf_counts.get('MEDIUM',0)}** ({pct(conf_counts.get('MEDIUM',0))})")
+        st.markdown(f"- 🔴 LOW confidence: **{conf_counts.get('LOW',0)}** ({pct(conf_counts.get('LOW',0))})")
+
+        st.markdown("**Avg Fit Score by Tier**")
+        for t in ["DIRECT", "ADJACENT", "UNRELATED", "EXCLUDED"]:
+            profs = [d for d in data if d.get("scores", {}).get("tier") == t]
+            avg = _avg_fit(profs)
+            st.markdown(f"- {TIER[t][1]}: **{avg:.0f}/100** ({len(profs)} profiles)")
+
+        st.markdown("**Seniority Breakdown**")
+        sen_counts = collections.Counter(
+            _standing(d).get("seniority", "Unknown") for d in data
+        )
+        for s, n in sorted(sen_counts.items(), key=lambda x: -x[1]):
+            st.markdown(f"- {s}: **{n}** ({pct(n)})")
+
+    st.markdown("---")
+
+    # ── Institution breakdown ──
+    st.markdown("**Top Institutions by DIRECT + ADJACENT count**")
+    inst_fit = collections.defaultdict(lambda: {"total": 0, "fit": 0})
+    for d in data:
+        inst = d.get("institute", "Unknown") or "Unknown"
+        t = d.get("scores", {}).get("tier", "UNRELATED")
+        inst_fit[inst]["total"] += 1
+        if t in ("DIRECT", "ADJACENT"):
+            inst_fit[inst]["fit"] += 1
+
+    rows2 = sorted(inst_fit.items(), key=lambda x: -x[1]["fit"])[:25]
+    import pandas as pd
+    df2 = pd.DataFrame([
+        {"Institution": inst, "Total": v["total"],
+         "Direct+Adjacent": v["fit"],
+         "Fit Rate": f"{v['fit']/v['total']*100:.0f}%" if v["total"] else "0%"}
+        for inst, v in rows2
+    ]).set_index("Institution")
+    st.dataframe(df2, use_container_width=True)
+
+    # ── Data freshness ──
+    st.markdown("**Data Freshness** (profiles by generation date)")
+    dates = collections.Counter()
+    for d in data:
+        gen = (d.get("_generated") or "")[:10]
+        if gen:
+            dates[gen] += 1
+    if dates:
+        newest = max(dates)
+        oldest = min(dates)
+        st.markdown(f"Newest: **{newest}** · Oldest: **{oldest}** · Date buckets: **{len(dates)}**")
+        top_dates = sorted(dates.items(), reverse=True)[:8]
+        for date, cnt in top_dates:
+            st.markdown(f"- {date}: {cnt} profiles")
+
+
+def _standing(d):
+    sr = d.get("scores", {}).get("standing")
+    return sr if isinstance(sr, dict) else {}
+
+
+def _avg_fit(profiles):
+    fits = [(p.get("scores", {}).get("llm", {}) or {}).get("overall_fit", 0) or 0
+            for p in profiles if isinstance(p.get("scores", {}).get("llm"), dict)]
+    return sum(fits) / len(fits) if fits else 0
+
+
 # ============================== HOME ==============================
 def home():
     st.markdown('<h1 class="main-title">Researcher → Proposal Match</h1>', unsafe_allow_html=True)
@@ -502,6 +839,10 @@ def home():
             <div class="muted-text" style="font-size: 11px;">{TIER[t][2][:40]}...</div>
         </div>
         """, unsafe_allow_html=True)
+
+    # Dataset health (collapsible)
+    with st.expander("📊 Dataset Health & Coverage"):
+        health_dashboard(data)
 
     # Enhanced Filters and Sorting section
     st.markdown('<h2 class="section-title">Filters & Sorting</h2>', unsafe_allow_html=True)
@@ -748,8 +1089,18 @@ def home():
 # ============================== DETAIL ==============================
 def detail(prof_data):
     d = prof_data
-    if st.button("← Back to ranking"):
-        st.session_state.sel_data = None; st.rerun()
+    _back_col, _, _dl_col = st.columns([2, 6, 2])
+    with _back_col:
+        if st.button("← Back to ranking"):
+            st.session_state.sel_data = None; st.rerun()
+    with _dl_col:
+        if _FPDF_OK:
+            _pdf = generate_profile_pdf(d)
+            _fname = (d.get("name") or "profile").replace(" ", "_") + ".pdf"
+            st.download_button("📄 Download PDF", _pdf, _fname, "application/pdf",
+                               use_container_width=True)
+        else:
+            st.caption("PDF: install fpdf2")
     ac = d.get("academic", {}); sc = d.get("scores", {}); llm = sc.get("llm", {})
     standing_raw = sc.get("standing")
     stand = standing_raw if isinstance(standing_raw, dict) else {}; tier = sc.get("tier", "UNRELATED")
