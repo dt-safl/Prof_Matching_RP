@@ -1,0 +1,91 @@
+{
+  "rfp_name": "Scaling AI Safety for a Multi-Agent World",
+  "rfp_id": "maas_2026",
+  "deadline": "2026-08-08",
+  "funders": ["Schmidt Sciences", "Google DeepMind", "ARIA", "Cooperative AI Foundation", "Google.org"],
+  "tiers": {
+    "tier1": "Up to $300,000 (1-2 years) — exploratory, pilot, focused investigation",
+    "tier2": "$300,000–$1,000,000 (1-2 years) — ambitious or collaborative"
+  },
+  "clusters": {
+    "S1": {
+      "name": "Sandboxes and Testbeds",
+      "description": "Realistic, reproducible multi-agent environments for studying frontier-model agent populations. Must be scalable, high-fidelity (frontier models not toy abstractions), externally valid, safe for studying dangerous behaviours, and reproducible.",
+      "scoring_question": "Does this researcher study, build, or contribute to realistic multi-agent testbeds or simulation environments for frontier AI agents? Consider: agent frameworks, benchmark design, simulation infrastructure, distilled proxy agents, external validity methods, or environment-agnostic logging tools.",
+      "key_signals": ["multi-agent testbed", "agent simulation", "agent benchmark", "agent environment", "llm agent framework", "agent platform", "frontier agent evaluation"]
+    },
+    "S2": {
+      "name": "The Science of Agent Networks",
+      "description": "System-level safety science of agent populations: how individual properties create population-level outcomes, vulnerability evaluation (cascading failures, adversarial sub-populations), emergent communication, collective agency, and phase transitions.",
+      "scoring_question": "Does this researcher study the system-level properties of multi-agent populations? Consider: game theory, mechanism design, emergent collective behaviors, multi-agent RL, cascading failures, collective agency, agent network analysis, or theoretical foundations of distributed AI systems.",
+      "key_signals": ["game theory", "mechanism design", "multi-agent RL", "MARL", "emergent collective", "cascading failure", "collective agency", "cooperative AI", "Nash equilibrium", "social choice", "agent interaction dynamics"]
+    },
+    "S3": {
+      "name": "Strengthening Agent Infrastructure",
+      "description": "Stress-testing and strengthening agent protocols (A2A etc.) for identity, authentication, reputation, accountability, provenance, commitment, and verifiable attributes. Addresses AI-agent-specific challenges: clonability, no persistent biological identity, machine-speed interactions.",
+      "scoring_question": "Does this researcher work on agent identity, authentication, reputation systems, cryptographic commitments, verifiable attributes, provenance, or accountability for AI agents? Consider: zero-knowledge proofs, cryptographic protocols, formal verification of distributed protocols, Sybil resistance, agent delegation, watermarking, proof-of-inference.",
+      "key_signals": ["agent identity", "reputation system", "zero-knowledge", "cryptographic protocol", "formal verification", "agent authentication", "provenance", "commitment protocol", "verifiable", "watermarking"]
+    },
+    "S4": {
+      "name": "Multi-Agent Oversight and Control",
+      "description": "Detection, attribution, and control of unsafe behaviour in deployed multi-agent systems at scale. Includes collusion detection, steganography detection, circuit breakers, mechanism/information design, scalable oversight, red/blue-team evaluations.",
+      "scoring_question": "Does this researcher work on monitoring, detecting, attributing, or controlling unsafe behaviours in multi-agent systems? Consider: collusion detection, steganography/covert communication detection, attribution tools, oversight interfaces, AI control methods extended to multi-agent, circuit breakers, red-teaming of agent collectives.",
+      "key_signals": ["collusion detection", "multi-agent oversight", "attribution", "ai control", "steganography detection", "covert communication", "red teaming", "circuit breaker", "scalable oversight", "agent monitoring"]
+    }
+  },
+  "selection_criteria": {
+    "SC1": {
+      "name": "Research Agenda Fit",
+      "description": "Does the proposal clearly engage with the intention behind the scientific questions in the research agenda?",
+      "scoring_question": "How well does this researcher's existing work and trajectory fit the core agenda of multi-agent AI safety (NOT individual agent alignment, NOT capability advancement, NOT AI for human cooperation)?"
+    },
+    "SC2": {
+      "name": "Scientific Quality and Rigour",
+      "description": "Is the proposed work technically sound, well-motivated, and capable of producing generalisable insight?",
+      "scoring_question": "Based on their publication record, methodology, and research depth — how rigorous and technically sound is their work? Consider venue quality, methodological sophistication, and depth of contribution."
+    },
+    "SC3": {
+      "name": "Potential Impact",
+      "description": "Would the project materially advance scientific understanding or meaningfully improve ability to understand, evaluate, or control risks from multi-principal, multi-agent AI?",
+      "scoring_question": "If this researcher applied their skills to the MAAS agenda, how high is the potential for their work to produce generalisable insights that materially advance multi-agent AI safety science?"
+    },
+    "SC4": {
+      "name": "Philanthropic Fit",
+      "description": "Is there a clear market, coordination, or incentive failure that means commercial interests are unlikely to solve this problem?",
+      "scoring_question": "Does this researcher work on problems that commercial AI labs (Google, OpenAI, Anthropic) are unlikely to fund or prioritise — foundational, precompetitive, or public-good research on multi-agent safety?"
+    },
+    "SC5": {
+      "name": "Feasibility and Scope",
+      "description": "Is there sufficient evidence that the researcher can execute ambitious but achievable work within 1-2 years?",
+      "scoring_question": "Does their track record (prior projects, deliverables, publications) suggest they can execute a focused 1-2 year MAAS research project with concrete outputs?"
+    },
+    "SC6": {
+      "name": "Team Expertise",
+      "description": "Is the team well-suited to execute the proposed work with relevant technical expertise and sufficient capacity?",
+      "scoring_question": "How well does this researcher's specific technical background (MAS, game theory, cryptography, distributed systems, AI safety, network science) match what the MAAS agenda actually requires?"
+    },
+    "SC7": {
+      "name": "Cost Appropriateness",
+      "description": "Is the proposed budget reasonable and well-justified given the project's goals and planned activities?",
+      "scoring_question": "Based on their institution type, research style, and project scale — would their work likely be scoped to a reasonable budget (Tier 1: up to $300K or Tier 2: up to $1M) with justifiable costs?"
+    }
+  },
+  "out_of_scope_signals": [
+    "single-agent alignment only",
+    "single-agent interpretability with no multi-agent extension",
+    "capability advancement primary goal",
+    "individual model robustness without system-level evaluation",
+    "AI for human cooperation (democratic institutions, mediation)",
+    "blockchain identity naive application",
+    "toy game theory without frontier model extension",
+    "non-technical policy work",
+    "commercial product development",
+    "agentic inequality / power concentration"
+  ],
+  "industry_funder_keywords": [
+    "google", "deepmind", "openai", "microsoft", "meta", "amazon", "nvidia",
+    "anthropic", "cohere", "stability ai", "hugging face", "inflection",
+    "schmidt sciences", "aria", "cooperative ai foundation",
+    "darpa", "iarpa", "dsrb", "epsrc", "nsf", "nist"
+  ]
+}
