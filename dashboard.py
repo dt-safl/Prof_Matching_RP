@@ -373,11 +373,12 @@ def render_card(e: dict, idx: int):
 
 # ─────────────────────── Render loop ────────────────────────────────────────
 for idx, entry in enumerate(page_data):
+    # Card rendered OUTSIDE expander — unsafe_allow_html works reliably in main flow
     card_html = render_card(entry, idx)
-    with st.expander(entry.get("name", "?"), expanded=False):
-        st.markdown(card_html, unsafe_allow_html=True)
+    st.markdown(card_html, unsafe_allow_html=True)
 
-        # Detail tabs
+    # Details in a separate expander below the card
+    with st.expander("Details", expanded=False):
         tab_fit, tab_sc, tab_research, tab_funding, tab_raw = st.tabs(
             ["🎯 Cluster Fit", "📋 Selection Criteria", "📚 Research", "💰 Funding & Network", "🔢 Raw"]
         )
@@ -395,36 +396,36 @@ for idx, entry in enumerate(page_data):
                     note = notes.get(c, "")
                     col_a, col_b = st.columns([1, 4])
                     with col_a:
-                        cls = score_color_class(score)
-                        st.markdown(f'<span class="{cls}" style="font-size:1.4rem;font-weight:800">{score}</span><br><span style="color:#6b7394;font-size:0.7rem">{label}</span>', unsafe_allow_html=True)
+                        st.metric(label=label, value=f"{score}/100")
                     with col_b:
                         st.progress(score / 100)
                         if note:
-                            st.markdown(f'<span style="color:#8b93b8;font-size:0.82rem">{note}</span>', unsafe_allow_html=True)
-                    st.markdown("---")
+                            st.caption(note)
+                    st.divider()
 
                 if key_ev:
                     st.markdown(f"**Key evidence:** {key_ev}")
                 if oos_risk not in ("none", "") and oos_reason:
                     st.warning(f"**Out-of-scope risk ({oos_risk}):** {oos_reason}")
             else:
-                st.info("This candidate hasn't been LLM-scored yet. Run `prep_maas.py` to score.")
+                st.info("This candidate hasn't been LLM-scored yet.")
 
         with tab_sc:
             sc = entry.get("selection_criteria") or {}
             if sc:
-                sc_data = []
+                # Native Streamlit — no HTML table needed
+                hc1, hc2, hc3 = st.columns([4, 1, 1])
+                hc1.markdown("**Criterion**")
+                hc2.markdown("**Score**")
+                hc3.markdown("**Level**")
+                st.divider()
                 for k, label in SC_LABELS.items():
-                    sc_data.append({"Criterion": label, "Score": sc.get(k, 0)})
-
-                sc_html = '<table class="sc-table"><tr><th>Criterion</th><th>Score</th><th>Level</th></tr>'
-                for row in sc_data:
-                    s = row["Score"]
-                    cls = score_color_class(s)
+                    s = sc.get(k, 0)
                     level = "Strong" if s >= 65 else "Moderate" if s >= 40 else "Weak" if s > 0 else "N/A"
-                    sc_html += f'<tr><td>{row["Criterion"]}</td><td class="{cls}">{s}</td><td style="color:#6b7394">{level}</td></tr>'
-                sc_html += "</table>"
-                st.markdown(sc_html, unsafe_allow_html=True)
+                    c1, c2, c3 = st.columns([4, 1, 1])
+                    c1.markdown(label)
+                    c2.markdown(f"**{s}**")
+                    c3.markdown(level)
             else:
                 st.info("Selection criteria not yet scored.")
 
@@ -436,22 +437,20 @@ for idx, entry in enumerate(page_data):
             papers = oa.get("all_papers", []) or []
 
             if summary:
-                st.markdown("**Research Summary**")
-                st.markdown(f'<p style="color:#c4cbdf;font-size:0.85rem">{summary}</p>', unsafe_allow_html=True)
+                st.markdown(f"**Research Summary**\n\n{summary}")
             if expertise:
-                st.markdown(f'**Expertise:** <span style="color:#8b93b8;font-size:0.82rem">{expertise}</span>', unsafe_allow_html=True)
+                st.markdown(f"**Expertise:** {expertise}")
             if verdict:
                 st.markdown("**Prior assessment (Schmidt 2026 pipeline):**")
-                st.markdown(f'<p style="color:#6b7394;font-size:0.8rem;font-style:italic">{verdict}</p>', unsafe_allow_html=True)
+                st.caption(verdict)
 
             if papers:
-                st.markdown(f"**Recent papers ({len(papers)} shown, from OpenAlex):**")
+                st.markdown(f"**Recent papers ({len(papers)} from OpenAlex):**")
                 for p in papers[:20]:
                     yr = p.get("year", "?")
                     title = p.get("title", "")
-                    st.markdown(f'<p style="margin:2px 0;font-size:0.8rem;color:#c4cbdf">[{yr}] {title}</p>', unsafe_allow_html=True)
+                    st.markdown(f"- [{yr}] {title}")
             else:
-                # Fallback to academic context
                 ac = entry.get("academic_context") or {}
                 works = ac.get("recent_works") or []
                 if works:
@@ -459,26 +458,19 @@ for idx, entry in enumerate(page_data):
                     for w in works:
                         title = w.get("title", "")
                         yr = w.get("year", w.get("publication_year", "?"))
-                        st.markdown(f'<p style="margin:2px 0;font-size:0.8rem;color:#c4cbdf">[{yr}] {title}</p>', unsafe_allow_html=True)
+                        st.markdown(f"- [{yr}] {title}")
 
-            # Academic metrics
             ac = entry.get("academic_context") or {}
             h = ac.get("h_index")
             wc = ac.get("works_count")
             cb = ac.get("cited_by_total")
             if any([h, wc, cb]):
-                st.markdown(
-                    f'<p style="color:#4a5178;font-size:0.75rem;margin-top:8px">'
-                    f'h-index: {h or "?"} &nbsp;·&nbsp; works: {wc or "?"} &nbsp;·&nbsp; citations: {cb or "?"}'
-                    f'</p>',
-                    unsafe_allow_html=True,
-                )
+                st.caption(f"h-index: {h or '?'} · works: {wc or '?'} · citations: {cb or '?'}")
 
         with tab_funding:
             oa = entry.get("oa_enrichment") or {}
             funders = oa.get("industry_funders") or []
             coauthors = oa.get("coauthors") or []
-            chips = entry.get("axis_b_chips") or []
 
             if funders:
                 st.markdown("**Industry / notable funders (from OpenAlex):**")
@@ -496,7 +488,6 @@ for idx, entry in enumerate(page_data):
                     n = c.get("papers_together", 1)
                     st.markdown(f'- **{c["name"]}** ({n} papers) — _{insts}_')
 
-            # Links
             links = entry.get("links") or {}
             if any(links.values()):
                 st.markdown("**Profile links:**")
@@ -505,31 +496,32 @@ for idx, entry in enumerate(page_data):
                         st.markdown(f"- [{k}]({url})")
 
         with tab_raw:
-            # Show raw cluster + SC scores as compact table
             cs = entry.get("cluster_scores") or {}
             sc = entry.get("selection_criteria") or {}
             col1, col2 = st.columns(2)
             with col1:
                 st.markdown("**Cluster scores**")
                 for c in ["S1", "S2", "S3", "S4"]:
-                    st.markdown(f'`{c}`: {cs.get(c, 0)}')
+                    st.markdown(f"`{c}`: {cs.get(c, 0)}")
             with col2:
                 st.markdown("**Selection criteria**")
                 for k, label in SC_LABELS.items():
-                    st.markdown(f'`{k}` {label}: {sc.get(k, 0)}')
+                    st.markdown(f"`{k}` {label}: {sc.get(k, 0)}")
 
             st.markdown(f"""
 **Metadata:**
-- Best cluster: `{entry.get('best_cluster','')}`
-- Axis A (best cluster score): **{entry.get('axis_a', 0)}**
-- OOS risk: `{entry.get('out_of_scope_risk','none')}`
+- Best cluster: `{entry.get('best_cluster', '')}`
+- Axis A: **{entry.get('axis_a', 0)}** / 100
+- OOS risk: `{entry.get('out_of_scope_risk', 'none')}`
 - Papers (OA): {(entry.get('oa_enrichment') or {}).get('total_works_fetched', 0)}
 - Context flag: `{entry.get('context_flag') or 'none'}`
-- Original Schmidt fit score: {entry.get('original_fit', 0)}
+- Original Schmidt fit: {entry.get('original_fit', 0)}
 """)
             email = entry.get("email", "")
             if email:
                 st.markdown(f"**Email:** {email}")
+
+    st.markdown('<hr style="border-color:#1e2236;margin:4px 0 12px 0">', unsafe_allow_html=True)
 
 # ─────────────────────── Pagination ─────────────────────────────────────────
 if n_pages > 1:
