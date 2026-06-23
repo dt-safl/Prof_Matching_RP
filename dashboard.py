@@ -7,6 +7,7 @@ Entirely separate from Schmidt 2026 dashboard. No shared scores.
 """
 
 import json, os, math, re
+import html as _html
 import streamlit as st
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,6 +31,7 @@ st.markdown("""
     background: #1a1e2e; border: 1px solid #2d3148; border-radius: 10px;
     padding: 14px 18px; margin-bottom: 10px; cursor: pointer;
     transition: border-color .15s;
+    content-visibility: auto; contain-intrinsic-size: 0 120px;
   }
   .prof-card:hover { border-color: #5b6af0; }
   .card-top { display: flex; align-items: flex-start; justify-content: space-between; }
@@ -299,101 +301,103 @@ st.markdown(
 
 
 # ─────────────────────── Card renderer ──────────────────────────────────────
-def render_card(e: dict, idx: int):
-    name = e.get("name", "Unknown")
-    institute = e.get("institute", "")
-    dept = e.get("department", "")
-    designation = e.get("designation", "")
-    axis_a = e.get("axis_a", 0)
-    best_cluster = e.get("best_cluster", "")
-    cluster_scores = e.get("cluster_scores") or {}
-    sc = e.get("selection_criteria") or {}
-    chips = e.get("axis_b_chips") or []
-    oos_risk = e.get("out_of_scope_risk", "none")
-    ctx_flag = e.get("context_flag")
-    scored = e.get("scored", False)
+def _e(s: str) -> str:
+    return _html.escape(str(s or ""), quote=True)
 
-    col_cls = score_color_class(axis_a)
-    best_label = CLUSTER_LABELS.get(best_cluster, "")
+
+def render_card(e: dict, idx: int):
+    name         = _e(e.get("name", "Unknown"))
+    institute    = _e(e.get("institute", ""))
+    dept         = _e(e.get("department", "") or e.get("designation", ""))
+    axis_a       = e.get("axis_a", 0)
+    best_cluster = e.get("best_cluster", "")
+    cs           = e.get("cluster_scores") or {}
+    chips        = e.get("axis_b_chips") or []
+    oos_risk     = e.get("out_of_scope_risk", "none")
+    ctx_flag     = e.get("context_flag")
+    scored       = e.get("scored", False)
+
+    col_cls     = score_color_class(axis_a)
+    best_label  = _e(CLUSTER_LABELS.get(best_cluster, ""))
     cluster_cls = f"cluster-{best_cluster}" if best_cluster else ""
 
-    # Cluster mini-bars HTML
-    bars_html = ""
+    bars = ""
     for c in ["S1", "S2", "S3", "S4"]:
-        s = cluster_scores.get(c, 0)
+        s   = cs.get(c, 0)
         pct = min(100, s)
         col = BAR_COLORS.get(c, "#6b7394")
-        bars_html += (
-            f'<div class="bar-row">'
-            f'<span class="bar-label">{c}</span>'
-            f'<div class="bar-track"><div class="bar-fill" style="width:{pct}%;background:{col}"></div></div>'
-            f'<span style="font-size:0.65rem;color:#6b7394;width:28px;text-align:right">{s}</span>'
-            f'</div>'
-        )
+        bars += (f'<div class="bar-row"><span class="bar-label">{c}</span>'
+                 f'<div class="bar-track"><div class="bar-fill" style="width:{pct}%;background:{col}"></div></div>'
+                 f'<span style="font-size:0.65rem;color:#6b7394;width:28px;text-align:right">{s}</span></div>')
 
-    # Evidence chips HTML
     chips_html = ""
     for chip in chips[:8]:
-        ct = chip.get("type", "")
-        chips_html += f'<span class="chip chip-{ct}" title="{chip.get("detail","")}">{chip.get("label","")}</span>'
+        ct     = chip.get("type", "")
+        detail = _e(chip.get("detail", ""))
+        label  = _e(chip.get("label", ""))
+        chips_html += f'<span class="chip chip-{ct}" title="{detail}">{label}</span>'
 
-    # OOS risk badge
-    oos_cls = f"oos-{oos_risk}"
-    oos_html = f'<span class="{oos_cls}" style="font-size:0.68rem">⚠ OOS:{oos_risk}</span>' if oos_risk not in ("none", "") else ""
+    oos_badge = ""
+    if oos_risk not in ("none", ""):
+        oos_badge = f'<span class="oos-{oos_risk}" style="font-size:0.68rem">&#9888; OOS:{_e(oos_risk)}</span>'
 
-    score_display = str(axis_a) if scored else "—"
-    score_sub = "/ 100 · best cluster" if scored else "not scored"
+    ctx_badge = ""
+    if ctx_flag:
+        ctx_badge = f'<span class="ctx-flag" style="margin-left:6px">&#9888; {_e(ctx_flag)}</span>'
 
-    paper_count = e.get("paper_count", 0)
-    paper_note = f" · {paper_count} OA papers" if paper_count > 0 else ""
+    score_display = str(axis_a) if scored else "&#8212;"
+    score_sub     = "/ 100 &middot; best cluster" if scored else "not scored"
+    paper_count   = e.get("paper_count", 0)
+    paper_note    = f" &middot; {paper_count} OA papers" if paper_count > 0 else ""
 
-    card_html = f"""
-    <div class="prof-card">
-      <div class="card-top">
-        <div style="flex:1">
-          <div class="card-name">{name}</div>
-          <div class="card-meta">{institute} &nbsp;·&nbsp; {dept or designation}{paper_note}</div>
-          <div style="margin-top:6px">
-            {f'<span class="cluster-badge {cluster_cls}">{best_label}</span>' if best_cluster else ''}
-            {oos_html}
-            {f'<span class="ctx-flag" style="margin-left:6px">⚠ {ctx_flag}</span>' if ctx_flag else ''}
-          </div>
-          <div style="margin-top:8px">{bars_html}</div>
-          {f'<div style="margin-top:6px">{chips_html}</div>' if chips_html else ''}
-        </div>
-        <div class="score-box">
-          <div class="score-val {col_cls}">{score_display}</div>
-          <div class="score-sub">{score_sub}</div>
-        </div>
-      </div>
-    </div>
-    """
-    return card_html
+    cluster_badge = (f'<span class="cluster-badge {cluster_cls}">{best_label}</span>'
+                     if best_cluster else "")
+    chips_div     = f'<div style="margin-top:6px">{chips_html}</div>' if chips_html else ""
+
+    return (
+        f'<div class="prof-card">'
+        f'<div class="card-top">'
+        f'<div style="flex:1">'
+        f'<div class="card-name">{name}</div>'
+        f'<div class="card-meta">{institute} &nbsp;&middot;&nbsp; {dept}{paper_note}</div>'
+        f'<div style="margin-top:6px">{cluster_badge}{oos_badge}{ctx_badge}</div>'
+        f'<div style="margin-top:8px">{bars}</div>'
+        f'{chips_div}'
+        f'</div>'
+        f'<div class="score-box">'
+        f'<div class="score-val {col_cls}">{score_display}</div>'
+        f'<div class="score-sub">{score_sub}</div>'
+        f'</div>'
+        f'</div>'
+        f'</div>'
+    )
 
 
 # ─────────────────────── Render loop ────────────────────────────────────────
-for idx, entry in enumerate(page_data):
-    # Card rendered OUTSIDE expander — unsafe_allow_html works reliably in main flow
-    card_html = render_card(entry, idx)
-    st.markdown(card_html, unsafe_allow_html=True)
+# Batch all cards into one st.markdown call — eliminates 25 separate delta messages
+_all_cards_html = "".join(render_card(entry, idx) for idx, entry in enumerate(page_data))
+st.markdown(_all_cards_html, unsafe_allow_html=True)
 
-    # Details in a separate expander below the card
-    with st.expander("Details", expanded=False):
+st.markdown('<p style="color:#4a5178;font-size:0.75rem;margin:8px 0 4px 0">&#9660; Expand below to see scores, papers &amp; funding signals</p>', unsafe_allow_html=True)
+
+for idx, entry in enumerate(page_data):
+    exp_label = f"{entry.get('name','?')[:45]}  ·  score {entry.get('axis_a',0)}"
+    with st.expander(exp_label, expanded=False):
         tab_fit, tab_sc, tab_research, tab_funding, tab_raw = st.tabs(
             ["🎯 Cluster Fit", "📋 Selection Criteria", "📚 Research", "💰 Funding & Network", "🔢 Raw"]
         )
 
         with tab_fit:
-            cs = entry.get("cluster_scores") or {}
-            notes = entry.get("cluster_notes") or {}
-            key_ev = entry.get("key_evidence", "")
-            oos_risk = entry.get("out_of_scope_risk", "none")
+            cs        = entry.get("cluster_scores") or {}
+            notes     = entry.get("cluster_notes") or {}
+            key_ev    = entry.get("key_evidence", "")
+            oos_risk  = entry.get("out_of_scope_risk", "none")
             oos_reason = entry.get("out_of_scope_reason", "")
 
             if entry.get("scored"):
                 for c, label in CLUSTER_LABELS.items():
                     score = cs.get(c, 0)
-                    note = notes.get(c, "")
+                    note  = notes.get(c, "")
                     col_a, col_b = st.columns([1, 4])
                     with col_a:
                         st.metric(label=label, value=f"{score}/100")
@@ -402,7 +406,6 @@ for idx, entry in enumerate(page_data):
                         if note:
                             st.caption(note)
                     st.divider()
-
                 if key_ev:
                     st.markdown(f"**Key evidence:** {key_ev}")
                 if oos_risk not in ("none", "") and oos_reason:
@@ -413,14 +416,13 @@ for idx, entry in enumerate(page_data):
         with tab_sc:
             sc = entry.get("selection_criteria") or {}
             if sc:
-                # Native Streamlit — no HTML table needed
                 hc1, hc2, hc3 = st.columns([4, 1, 1])
                 hc1.markdown("**Criterion**")
                 hc2.markdown("**Score**")
                 hc3.markdown("**Level**")
                 st.divider()
                 for k, label in SC_LABELS.items():
-                    s = sc.get(k, 0)
+                    s     = sc.get(k, 0)
                     level = "Strong" if s >= 65 else "Moderate" if s >= 40 else "Weak" if s > 0 else "N/A"
                     c1, c2, c3 = st.columns([4, 1, 1])
                     c1.markdown(label)
@@ -430,54 +432,55 @@ for idx, entry in enumerate(page_data):
                 st.info("Selection criteria not yet scored.")
 
         with tab_research:
-            summary = entry.get("research_summary", "")
+            summary   = entry.get("research_summary", "")
             expertise = entry.get("expertise", "")
-            verdict = entry.get("original_verdict", "")
-            oa = entry.get("oa_enrichment") or {}
-            papers = oa.get("all_papers", []) or []
+            verdict   = entry.get("original_verdict", "")
+            oa        = entry.get("oa_enrichment") or {}
+            papers    = oa.get("all_papers", []) or []
 
             if summary:
                 st.markdown(f"**Research Summary**\n\n{summary}")
             if expertise:
                 st.markdown(f"**Expertise:** {expertise}")
             if verdict:
-                st.markdown("**Prior assessment (Schmidt 2026 pipeline):**")
-                st.caption(verdict)
+                with st.expander("Prior assessment (Schmidt 2026 pipeline)", expanded=False):
+                    st.caption(verdict)
 
             if papers:
                 st.markdown(f"**Recent papers ({len(papers)} from OpenAlex):**")
                 for p in papers[:20]:
-                    yr = p.get("year", "?")
-                    title = p.get("title", "")
-                    st.markdown(f"- [{yr}] {title}")
+                    yr    = p.get("year", "?")
+                    title = p.get("title", "") or ""
+                    st.markdown(f"- **{yr}** — {title}")
             else:
-                ac = entry.get("academic_context") or {}
+                ac    = entry.get("academic_context") or {}
                 works = ac.get("recent_works") or []
                 if works:
                     st.markdown("**Recent papers (from profile):**")
                     for w in works:
-                        title = w.get("title", "")
-                        yr = w.get("year", w.get("publication_year", "?"))
-                        st.markdown(f"- [{yr}] {title}")
+                        title = w.get("title", "") or ""
+                        yr    = w.get("year", w.get("publication_year", "?"))
+                        st.markdown(f"- **{yr}** — {title}")
 
             ac = entry.get("academic_context") or {}
-            h = ac.get("h_index")
+            h  = ac.get("h_index")
             wc = ac.get("works_count")
             cb = ac.get("cited_by_total")
             if any([h, wc, cb]):
                 st.caption(f"h-index: {h or '?'} · works: {wc or '?'} · citations: {cb or '?'}")
 
         with tab_funding:
-            oa = entry.get("oa_enrichment") or {}
-            funders = oa.get("industry_funders") or []
+            oa        = entry.get("oa_enrichment") or {}
+            funders   = oa.get("industry_funders") or []
             coauthors = oa.get("coauthors") or []
 
             if funders:
                 st.markdown("**Industry / notable funders (from OpenAlex):**")
                 for f in funders:
-                    yr = f.get("year", "")
-                    paper = f.get("paper_title", "")
-                    st.markdown(f'- **{f["funder"]}** ({yr}) — _{paper}_')
+                    yr    = f.get("year", "")
+                    paper = (f.get("paper_title", "") or "").replace("_", r"\_").replace("*", r"\*")
+                    fname = (f.get("funder", "") or "").replace("_", r"\_")
+                    st.markdown(f"- **{fname}** ({yr}) — {paper}")
             else:
                 st.markdown("*No industry funder signals found in OpenAlex.*")
 
@@ -485,8 +488,9 @@ for idx, entry in enumerate(page_data):
                 st.markdown("**Notable co-authors (by joint papers since 2020):**")
                 for c in coauthors[:6]:
                     insts = ", ".join(c.get("institutions", []))
-                    n = c.get("papers_together", 1)
-                    st.markdown(f'- **{c["name"]}** ({n} papers) — _{insts}_')
+                    n     = c.get("papers_together", 1)
+                    cname = (c.get("name", "") or "").replace("_", r"\_")
+                    st.markdown(f"- **{cname}** ({n} papers) — {insts}")
 
             links = entry.get("links") or {}
             if any(links.values()):
@@ -496,8 +500,8 @@ for idx, entry in enumerate(page_data):
                         st.markdown(f"- [{k}]({url})")
 
         with tab_raw:
-            cs = entry.get("cluster_scores") or {}
-            sc = entry.get("selection_criteria") or {}
+            cs   = entry.get("cluster_scores") or {}
+            sc   = entry.get("selection_criteria") or {}
             col1, col2 = st.columns(2)
             with col1:
                 st.markdown("**Cluster scores**")
@@ -520,8 +524,6 @@ for idx, entry in enumerate(page_data):
             email = entry.get("email", "")
             if email:
                 st.markdown(f"**Email:** {email}")
-
-    st.markdown('<hr style="border-color:#1e2236;margin:4px 0 12px 0">', unsafe_allow_html=True)
 
 # ─────────────────────── Pagination ─────────────────────────────────────────
 if n_pages > 1:
